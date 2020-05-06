@@ -123,7 +123,7 @@ class PageViewControllerTests: XCTestCase {
     
     private func makeSUT(pages: [UIViewController] = []) -> PageViewController {
         let sut = PageViewController(pages: pages)
-        _ = sut.view
+        sut.loadViewIfNeeded()
         return sut
     }
 }
