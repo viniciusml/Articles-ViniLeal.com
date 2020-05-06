@@ -18,14 +18,9 @@
 
 import XCTest
 
-protocol RequestBuilder {
-    func build(from host: URL) -> URLRequest
-}
-
-class URLRequestBuilder {
-    
-    func build(from host: URL) -> URLRequest {
-        return URLRequest(url: host)
+extension URL {
+    func buildRequest() -> URLRequest {
+        return URLRequest(url: self)
     }
 }
 
@@ -40,10 +35,9 @@ extension URLRequest {
 class URLRequestBuilderTests: XCTestCase {
 
     func test_build_usesCorrectHostURL() {
-        let sut = URLRequestBuilder()
         let url = URL(string: "http://any-url.com")!
         
-        let request = sut.build(from: url)
+        let request = url.buildRequest()
         
         XCTAssertEqual(request.url, url)
     }
