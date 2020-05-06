@@ -43,10 +43,9 @@ class URLRequestBuilderTests: XCTestCase {
     }
     
     func test_build_setsHTTPMethod() {
-        let sut = URLRequestBuilder()
         let url = URL(string: "http://any-url.com")!
         
-        let request = sut.build(from: url)
+        let request = url.buildRequest()
                          .method("GET")
         
         XCTAssertEqual(request.httpMethod, "GET")
