@@ -22,11 +22,20 @@ class StoreObserverTests: XCTestCase {
         XCTAssertEqual(queue.addedProducts, ["a product"])
     }
     
+    func test_restore_restoresCompletedTransactionsToQueue() {
+        let queue = PaymentQueueSpy()
+        let sut = StoreObserver(queue: queue)
+        
+        sut.restore()
+        
+        XCTAssertEqual(queue.messages, [.restore])
+    }
+    
     // MARK: Helpers
     
     private class PaymentQueueSpy: SKPaymentQueue {
         enum Message {
-            case add
+            case add, restore
         }
         
         private(set) var messages = [Message]()
@@ -35,6 +44,10 @@ class StoreObserverTests: XCTestCase {
         override func add(_ payment: SKPayment) {
             messages.append(.add)
             addedProducts.append(payment.productIdentifier)
+        }
+        
+        override func restoreCompletedTransactions() {
+            messages.append(.restore)
         }
     }
     

@@ -19,4 +19,8 @@ public class StoreObserver {
         let payment = SKMutablePayment(product: product)
         queue.add(payment)
     }
+    
+    public func restore() {
+        queue.restoreCompletedTransactions()
+    }
 }
