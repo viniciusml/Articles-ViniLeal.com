@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		D8054F8C25C3600C00476E9A /* InAppPurchase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8054F8225C3600B00476E9A /* InAppPurchase.framework */; };
 		D8054FA125C363AB00476E9A /* StoreObserverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8054FA025C363AB00476E9A /* StoreObserverTests.swift */; };
+		D8842F6625D08A76002ADA97 /* StoreObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8842F6525D08A76002ADA97 /* StoreObserver.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -27,6 +28,7 @@
 		D8054F8B25C3600C00476E9A /* InAppPurchaseTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InAppPurchaseTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8054F9225C3600C00476E9A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D8054FA025C363AB00476E9A /* StoreObserverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreObserverTests.swift; sourceTree = "<group>"; };
+		D8842F6525D08A76002ADA97 /* StoreObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreObserver.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +72,7 @@
 			isa = PBXGroup;
 			children = (
 				D8054F8625C3600B00476E9A /* Info.plist */,
+				D8842F6525D08A76002ADA97 /* StoreObserver.swift */,
 			);
 			path = InAppPurchase;
 			sourceTree = "<group>";
@@ -143,6 +146,7 @@
 				TargetAttributes = {
 					D8054F8125C3600B00476E9A = {
 						CreatedOnToolsVersion = 12.4;
+						LastSwiftMigration = 1220;
 					};
 					D8054F8A25C3600C00476E9A = {
 						CreatedOnToolsVersion = 12.4;
@@ -191,6 +195,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D8842F6625D08A76002ADA97 /* StoreObserver.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -337,6 +342,7 @@
 		D8054F9725C3600C00476E9A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
@@ -354,6 +360,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.viniciusLeal.InAppPurchase;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -361,6 +368,7 @@
 		D8054F9825C3600C00476E9A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
@@ -385,6 +393,7 @@
 		D8054F9A25C3600C00476E9A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -405,6 +414,7 @@
 		D8054F9B25C3600C00476E9A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
