@@ -31,6 +31,15 @@ class StoreObserverTests: XCTestCase {
         XCTAssertEqual(queue.messages, [.restore])
     }
     
+    func test_updatedTransactions_purchasingOrDeferred_doNotMessageQueue() {
+        let queue = PaymentQueueSpy()
+        let sut = StoreObserver(queue: queue)
+        
+        sut.paymentQueue(queue, updatedTransactions: [.purchasing, .deferred])
+        
+        XCTAssertTrue(queue.messages.isEmpty)
+    }
+    
     // MARK: Helpers
     
     private class PaymentQueueSpy: SKPaymentQueue {
@@ -61,6 +70,29 @@ class StoreObserverTests: XCTestCase {
         
         override var productIdentifier: String {
             identifier
+        }
+    }
+}
+
+extension SKPaymentTransaction {
+    static var purchasing: SKPaymentTransaction {
+        TestTransaction(state: .purchasing)
+    }
+    
+    static var deferred: SKPaymentTransaction {
+        TestTransaction(state: .deferred)
+    }
+    
+    private class TestTransaction: SKPaymentTransaction {
+        
+        let state: SKPaymentTransactionState
+        
+        init(state: SKPaymentTransactionState) {
+            self.state = state
+        }
+        
+        override var transactionState: SKPaymentTransactionState {
+            state
         }
     }
 }

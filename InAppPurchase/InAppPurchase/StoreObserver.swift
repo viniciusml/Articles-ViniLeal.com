@@ -7,7 +7,7 @@
 
 import StoreKit
 
-public class StoreObserver {
+public class StoreObserver: NSObject {
     
     let queue: SKPaymentQueue
     
@@ -22,5 +22,19 @@ public class StoreObserver {
     
     public func restore() {
         queue.restoreCompletedTransactions()
+    }
+}
+
+extension StoreObserver: SKPaymentTransactionObserver {
+    
+    public func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
+        
+        transactions.forEach { transaction in
+            
+            switch transaction.transactionState {
+            case .purchasing, .deferred: break
+            default: fatalError()
+            }
+        }
     }
 }
