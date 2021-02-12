@@ -33,6 +33,10 @@ extension StoreObserver: SKPaymentTransactionObserver {
             
             switch transaction.transactionState {
             case .purchasing, .deferred: break
+            case .purchased:
+                queue.finishTransaction(transaction)
+            case .failed: ()
+            case .restored: ()
             default: fatalError()
             }
         }

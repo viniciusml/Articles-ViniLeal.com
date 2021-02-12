@@ -40,11 +40,20 @@ class StoreObserverTests: XCTestCase {
         XCTAssertTrue(queue.messages.isEmpty)
     }
     
+    func test_updatedTransactions_purchased_messagesQueue() {
+        let queue = PaymentQueueSpy()
+        let sut = StoreObserver(queue: queue)
+        
+        sut.paymentQueue(queue, updatedTransactions: [.purchased])
+        
+        XCTAssertEqual(queue.messages, [.finish])
+    }
+    
     // MARK: Helpers
     
     private class PaymentQueueSpy: SKPaymentQueue {
         enum Message {
-            case add, restore
+            case add, restore, finish
         }
         
         private(set) var messages = [Message]()
@@ -57,6 +66,10 @@ class StoreObserverTests: XCTestCase {
         
         override func restoreCompletedTransactions() {
             messages.append(.restore)
+        }
+        
+        override func finishTransaction(_ transaction: SKPaymentTransaction) {
+            messages.append(.finish)
         }
     }
     
@@ -81,6 +94,10 @@ extension SKPaymentTransaction {
     
     static var deferred: SKPaymentTransaction {
         TestTransaction(state: .deferred)
+    }
+    
+    static var purchased: SKPaymentTransaction {
+        TestTransaction(state: .purchased)
     }
     
     private class TestTransaction: SKPaymentTransaction {
