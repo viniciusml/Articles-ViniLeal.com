@@ -48,7 +48,15 @@ class StoreObserverTests: XCTestCase {
     func test_updatedTransactions_failed_messagesQueue() {
         let (queue, sut) = makeSUT()
         
-        sut.paymentQueue(queue, updatedTransactions: [.purchased])
+        sut.paymentQueue(queue, updatedTransactions: [.failed])
+        
+        XCTAssertEqual(queue.messages, [.finish])
+    }
+    
+    func test_updatedTransactions_restored_messagesQueue() {
+        let (queue, sut) = makeSUT()
+        
+        sut.paymentQueue(queue, updatedTransactions: [.restored])
         
         XCTAssertEqual(queue.messages, [.finish])
     }
@@ -108,6 +116,14 @@ extension SKPaymentTransaction {
     
     static var purchased: SKPaymentTransaction {
         TestTransaction(state: .purchased)
+    }
+    
+    static var failed: SKPaymentTransaction {
+        TestTransaction(state: .failed)
+    }
+    
+    static var restored: SKPaymentTransaction {
+        TestTransaction(state: .restored)
     }
     
     private class TestTransaction: SKPaymentTransaction {
