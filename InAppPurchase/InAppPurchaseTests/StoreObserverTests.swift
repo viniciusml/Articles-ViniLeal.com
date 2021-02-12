@@ -106,24 +106,14 @@ class StoreObserverTests: XCTestCase {
 }
 
 extension SKPaymentTransaction {
-    static var purchasing: SKPaymentTransaction {
-        TestTransaction(state: .purchasing)
-    }
+    static let purchasing = makeTestTransaction(.purchasing)
+    static let deferred = makeTestTransaction(.deferred)
+    static let purchased = makeTestTransaction(.purchased)
+    static let failed = makeTestTransaction(.failed)
+    static let restored = makeTestTransaction(.restored)
     
-    static var deferred: SKPaymentTransaction {
-        TestTransaction(state: .deferred)
-    }
-    
-    static var purchased: SKPaymentTransaction {
-        TestTransaction(state: .purchased)
-    }
-    
-    static var failed: SKPaymentTransaction {
-        TestTransaction(state: .failed)
-    }
-    
-    static var restored: SKPaymentTransaction {
-        TestTransaction(state: .restored)
+    private static func makeTestTransaction(_ state: SKPaymentTransactionState) -> SKPaymentTransaction {
+        TestTransaction(state: state)
     }
     
     private class TestTransaction: SKPaymentTransaction {
