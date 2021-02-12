@@ -12,8 +12,7 @@ import XCTest
 class StoreObserverTests: XCTestCase {
     
     func test_buy_addsPaymentRequestToQueue() {
-        let queue = PaymentQueueSpy()
-        let sut = StoreObserver(queue: queue)
+        let (queue, sut) = makeSUT()
         
         let product = TestProduct(identifier: "a product")
         sut.buy(product)
@@ -23,8 +22,7 @@ class StoreObserverTests: XCTestCase {
     }
     
     func test_restore_restoresCompletedTransactionsToQueue() {
-        let queue = PaymentQueueSpy()
-        let sut = StoreObserver(queue: queue)
+        let (queue, sut) = makeSUT()
         
         sut.restore()
         
@@ -32,8 +30,7 @@ class StoreObserverTests: XCTestCase {
     }
     
     func test_updatedTransactions_purchasingOrDeferred_doNotMessageQueue() {
-        let queue = PaymentQueueSpy()
-        let sut = StoreObserver(queue: queue)
+        let (queue, sut) = makeSUT()
         
         sut.paymentQueue(queue, updatedTransactions: [.purchasing, .deferred])
         
@@ -41,8 +38,7 @@ class StoreObserverTests: XCTestCase {
     }
     
     func test_updatedTransactions_purchased_messagesQueue() {
-        let queue = PaymentQueueSpy()
-        let sut = StoreObserver(queue: queue)
+        let (queue, sut) = makeSUT()
         
         sut.paymentQueue(queue, updatedTransactions: [.purchased])
         
@@ -50,6 +46,12 @@ class StoreObserverTests: XCTestCase {
     }
     
     // MARK: Helpers
+    
+    private func makeSUT() -> (PaymentQueueSpy, StoreObserver) {
+        let queue = PaymentQueueSpy()
+        let sut = StoreObserver(queue: queue)
+        return (queue, sut)
+    }
     
     private class PaymentQueueSpy: SKPaymentQueue {
         enum Message {
