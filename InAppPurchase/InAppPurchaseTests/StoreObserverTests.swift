@@ -45,6 +45,14 @@ class StoreObserverTests: XCTestCase {
         XCTAssertEqual(queue.messages, [.finish])
     }
     
+    func test_updatedTransactions_failed_messagesQueue() {
+        let (queue, sut) = makeSUT()
+        
+        sut.paymentQueue(queue, updatedTransactions: [.purchased])
+        
+        XCTAssertEqual(queue.messages, [.finish])
+    }
+    
     // MARK: Helpers
     
     private func makeSUT() -> (PaymentQueueSpy, StoreObserver) {
