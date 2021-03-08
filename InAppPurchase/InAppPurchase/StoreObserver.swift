@@ -24,15 +24,15 @@ public class StoreObserver: NSObject {
         queue.restoreCompletedTransactions()
     }
     
-    private func handlePurchased(_ transaction: SKPaymentTransaction) {
+    private func purchased(_ transaction: SKPaymentTransaction) {
         queue.finishTransaction(transaction)
     }
     
-    private func handleFailed(_ transaction: SKPaymentTransaction) {
+    private func failed(_ transaction: SKPaymentTransaction) {
         queue.finishTransaction(transaction)
     }
     
-    private func handleRestored(_ transaction: SKPaymentTransaction) {
+    private func restored(_ transaction: SKPaymentTransaction) {
         queue.finishTransaction(transaction)
     }
 }
@@ -41,17 +41,21 @@ extension StoreObserver: SKPaymentTransactionObserver {
     
     public func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
         
-        transactions.forEach { transaction in
-            
+        transactions.handle(purchased, failed, restored)
+    }
+}
+
+extension Array where Element == SKPaymentTransaction {
+    func handle(_ purchased: (Element) -> Void,
+                _ failed: (Element) -> Void,
+                _ restored: (Element) -> Void) {
+        
+        forEach { transaction in
             switch transaction.transactionState {
-            case .purchasing, .deferred:
-                break
-            case .purchased:
-                handlePurchased(transaction)
-            case .failed:
-                handleFailed(transaction)
-            case .restored:
-                handleRestored(transaction)
+            case .purchasing, .deferred: break
+            case .purchased: purchased(transaction)
+            case .failed: failed(transaction)
+            case .restored: restored(transaction)
             @unknown default: fatalError()
             }
         }
