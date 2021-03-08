@@ -10,6 +10,8 @@
 		D8054F8C25C3600C00476E9A /* InAppPurchase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8054F8225C3600B00476E9A /* InAppPurchase.framework */; };
 		D8054FA125C363AB00476E9A /* StoreObserverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8054FA025C363AB00476E9A /* StoreObserverTests.swift */; };
 		D849AAA125F6D2A3001DA349 /* Array+SKPaymentTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = D849AAA025F6D2A3001DA349 /* Array+SKPaymentTransaction.swift */; };
+		D849AAA825F6D301001DA349 /* StoreLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D849AAA725F6D301001DA349 /* StoreLoader.swift */; };
+		D849AAAC25F6D30E001DA349 /* StoreLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D849AAAB25F6D30E001DA349 /* StoreLoaderTests.swift */; };
 		D8842F6625D08A76002ADA97 /* StoreObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8842F6525D08A76002ADA97 /* StoreObserver.swift */; };
 /* End PBXBuildFile section */
 
@@ -30,6 +32,8 @@
 		D8054F9225C3600C00476E9A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D8054FA025C363AB00476E9A /* StoreObserverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreObserverTests.swift; sourceTree = "<group>"; };
 		D849AAA025F6D2A3001DA349 /* Array+SKPaymentTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+SKPaymentTransaction.swift"; sourceTree = "<group>"; };
+		D849AAA725F6D301001DA349 /* StoreLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreLoader.swift; sourceTree = "<group>"; };
+		D849AAAB25F6D30E001DA349 /* StoreLoaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreLoaderTests.swift; sourceTree = "<group>"; };
 		D8842F6525D08A76002ADA97 /* StoreObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreObserver.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -76,6 +80,7 @@
 				D8054F8625C3600B00476E9A /* Info.plist */,
 				D8842F6525D08A76002ADA97 /* StoreObserver.swift */,
 				D849AAA025F6D2A3001DA349 /* Array+SKPaymentTransaction.swift */,
+				D849AAA725F6D301001DA349 /* StoreLoader.swift */,
 			);
 			path = InAppPurchase;
 			sourceTree = "<group>";
@@ -85,6 +90,7 @@
 			children = (
 				D8054F9225C3600C00476E9A /* Info.plist */,
 				D8054FA025C363AB00476E9A /* StoreObserverTests.swift */,
+				D849AAAB25F6D30E001DA349 /* StoreLoaderTests.swift */,
 			);
 			path = InAppPurchaseTests;
 			sourceTree = "<group>";
@@ -198,6 +204,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D849AAA825F6D301001DA349 /* StoreLoader.swift in Sources */,
 				D849AAA125F6D2A3001DA349 /* Array+SKPaymentTransaction.swift in Sources */,
 				D8842F6625D08A76002ADA97 /* StoreObserver.swift in Sources */,
 			);
@@ -208,6 +215,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D8054FA125C363AB00476E9A /* StoreObserverTests.swift in Sources */,
+				D849AAAC25F6D30E001DA349 /* StoreLoaderTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
