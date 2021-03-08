@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		D8054F8C25C3600C00476E9A /* InAppPurchase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8054F8225C3600B00476E9A /* InAppPurchase.framework */; };
 		D8054FA125C363AB00476E9A /* StoreObserverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8054FA025C363AB00476E9A /* StoreObserverTests.swift */; };
+		D849AAA125F6D2A3001DA349 /* Array+SKPaymentTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = D849AAA025F6D2A3001DA349 /* Array+SKPaymentTransaction.swift */; };
 		D8842F6625D08A76002ADA97 /* StoreObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8842F6525D08A76002ADA97 /* StoreObserver.swift */; };
 /* End PBXBuildFile section */
 
@@ -28,6 +29,7 @@
 		D8054F8B25C3600C00476E9A /* InAppPurchaseTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InAppPurchaseTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8054F9225C3600C00476E9A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D8054FA025C363AB00476E9A /* StoreObserverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreObserverTests.swift; sourceTree = "<group>"; };
+		D849AAA025F6D2A3001DA349 /* Array+SKPaymentTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+SKPaymentTransaction.swift"; sourceTree = "<group>"; };
 		D8842F6525D08A76002ADA97 /* StoreObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreObserver.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -73,6 +75,7 @@
 			children = (
 				D8054F8625C3600B00476E9A /* Info.plist */,
 				D8842F6525D08A76002ADA97 /* StoreObserver.swift */,
+				D849AAA025F6D2A3001DA349 /* Array+SKPaymentTransaction.swift */,
 			);
 			path = InAppPurchase;
 			sourceTree = "<group>";
@@ -195,6 +198,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D849AAA125F6D2A3001DA349 /* Array+SKPaymentTransaction.swift in Sources */,
 				D8842F6625D08A76002ADA97 /* StoreObserver.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
