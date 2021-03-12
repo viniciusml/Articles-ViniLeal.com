@@ -38,4 +38,8 @@ extension StoreLoader: SKProductsRequestDelegate {
     public func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
         
     }
+    
+    public func request(_ request: SKRequest, didFailWithError error: Error) {
+        
+    }
 }

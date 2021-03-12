@@ -41,12 +41,19 @@ class StoreLoaderTests: XCTestCase {
         
         XCTAssertEqual(request.messages, [.start])
     }
+    
+    func test_completesWithError_onRequestFailure() {
+        
+    }
 }
 
 class ProductsRequestSpy: SKProductsRequest {
     enum Message {
         case start
     }
+    
+    private var error: Error?
+    private var response: SKProductsResponse?
     
     private(set) var messages = [Message]()
     private(set) var identifiers = Set<String>()
@@ -58,6 +65,24 @@ class ProductsRequestSpy: SKProductsRequest {
     
     override func start() {
         messages.append(.start)
+        complete()
+    }
+    
+    private func complete() {
+        if let error = error {
+            self.delegate?.request!(self, didFailWithError: error)
+        }
+        if let response = response {
+            self.delegate?.productsRequest(self, didReceive: response)
+        }
+    }
+    
+    func stubWith(_ error: Error) {
+        self.error = error
+    }
+    
+    func stubWith(_ response: SKProductsResponse) {
+        self.response = response
     }
 }
 
