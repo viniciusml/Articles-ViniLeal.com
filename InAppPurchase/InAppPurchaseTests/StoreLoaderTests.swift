@@ -13,15 +13,14 @@ class StoreLoaderAdapterTests: XCTestCase {
     
     func test_adapter_createsProperRequest() {
         let identifiers = ["id1", "id2"]
-        var requestSpy: ProductsRequestSpy!
-        let sut = StoreLoaderAdapter(identifiers: identifiers, factory: {
-            requestSpy = ProductsRequestSpy(productIdentifiers: $0)
-            return requestSpy
-        })
         
-        _ = sut.createRequest()
-        
-        XCTAssertTrue(requestSpy.identifiers.isSubset(of: identifiers))
+        _ = StoreLoaderFactory.make(
+            with: identifiers,
+            request: { mappedIdentifiers in
+                
+                XCTAssertTrue(mappedIdentifiers.isSubset(of: identifiers))
+                return ProductsRequestSpy.any
+            })
     }
 }
 
@@ -44,21 +43,26 @@ class StoreLoaderTests: XCTestCase {
     }
 }
 
-class ProductsRequestSpy: Request {
+class ProductsRequestSpy: SKProductsRequest {
     enum Message {
         case start
     }
     
-    var delegate: SKProductsRequestDelegate?
-    
     private(set) var messages = [Message]()
     private(set) var identifiers = Set<String>()
     
-    required init(productIdentifiers: Set<String> = Set()) {
-        identifiers.formUnion(productIdentifiers)
+    override init(productIdentifiers: Set<String> = Set()) {
+        identifiers = productIdentifiers
+        super.init()
     }
     
-    func start() {
+    override func start() {
         messages.append(.start)
+    }
+}
+
+extension ProductsRequestSpy {
+    static var any: ProductsRequestSpy {
+        ProductsRequestSpy(productIdentifiers: Set<String>())
     }
 }
