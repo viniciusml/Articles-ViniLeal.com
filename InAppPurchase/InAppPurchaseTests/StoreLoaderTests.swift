@@ -33,6 +33,15 @@ class StoreLoaderTests: XCTestCase {
 
         XCTAssertTrue(request.delegate === sut)
     }
+    
+    func test_fetchProducts_startsRequest() {
+        let request = ProductsRequestSpy()
+        let sut = StoreLoader(request: request)
+        
+        sut.fetchProducts()
+        
+        XCTAssertEqual(request.messages, [.start])
+    }
 }
 
 class ProductsRequestSpy: Request {

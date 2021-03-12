@@ -43,6 +43,10 @@ public class StoreLoader: NSObject {
         super.init()
         self.request.delegate = self
     }
+    
+    public func fetchProducts() {
+        request.start()
+    }
 }
 
 extension StoreLoader: SKProductsRequestDelegate {
