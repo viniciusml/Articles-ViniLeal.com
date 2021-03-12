@@ -8,6 +8,7 @@
 import StoreKit
 
 public protocol Request {
+    var delegate: SKProductsRequestDelegate? { get set }
     init(productIdentifiers: Set<String>)
     func start()
 }
@@ -34,10 +35,18 @@ public class StoreLoaderAdapter {
     }
 }
 
-public class StoreLoader {
-    let request: (Set<String>) -> SKProductsRequest
+public class StoreLoader: NSObject {
+    private var request: Request
     
-    public init(request: @escaping (Set<String>) -> SKProductsRequest = SKProductsRequest.init(productIdentifiers:)) {
+    public init(request: Request) {
         self.request = request
+        super.init()
+        self.request.delegate = self
+    }
+}
+
+extension StoreLoader: SKProductsRequestDelegate {
+    public func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
+        
     }
 }

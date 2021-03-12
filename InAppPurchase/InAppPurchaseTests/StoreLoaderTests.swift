@@ -25,22 +25,22 @@ class StoreLoaderAdapterTests: XCTestCase {
     }
 }
 
-//class StoreLoaderTests: XCTestCase {
-//
-//    func test_init_doesNotLoadProducts() {
-//        let request = ProductsRequestSpy()
-//        let sut = StoreLoader(request: { _ in
-//            request
-//        })
-//
-//        XCTAssertTrue(request.messages.isEmpty)
-//    }
-//}
+class StoreLoaderTests: XCTestCase {
+
+    func test_init_setsDelegate() {
+        let request = ProductsRequestSpy()
+        let sut = StoreLoader(request: request)
+
+        XCTAssertTrue(request.delegate === sut)
+    }
+}
 
 class ProductsRequestSpy: Request {
     enum Message {
         case start
     }
+    
+    var delegate: SKProductsRequestDelegate?
     
     private(set) var messages = [Message]()
     private(set) var identifiers = Set<String>()
