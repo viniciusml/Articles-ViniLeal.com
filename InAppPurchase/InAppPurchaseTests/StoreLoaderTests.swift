@@ -42,47 +42,24 @@ class StoreLoaderTests: XCTestCase {
     
     func test_completeWithError_onRequestFailure() {
         let (request, sut) = makeSUT()
-        let exp = expectation(description: "Wait for completion")
-        var expectedError: NSError?
+        let expectedError = anyNSError()
         
         sut.fetchProducts()
         
-        sut.completion = { receivedResult in
-            switch receivedResult {
-            case .success:
-                XCTFail("expected failure, received success instead.")
-            case let .failure(error as NSError):
-                expectedError = error
-                exp.fulfill()
-            }
-        }
-        request.completeWith(anyNSError())
-        
-        wait(for: [exp], timeout: 0.1)
-        XCTAssertEqual(expectedError, anyNSError())
+        expect(sut, toCompleteWith: .failure(expectedError), when: {
+            request.completeWith(expectedError)
+        })
     }
     
     func test_completesWithResponse_onRequestSuccess() {
         let (request, sut) = makeSUT()
         let expectedProductsResponse = anyProductsResponse(id: "test response")
-        let exp = expectation(description: "Wait for completion")
-        var receivedProductsResponse: SKProductsResponse?
         
         sut.fetchProducts()
         
-        sut.completion = { receivedResult in
-            switch receivedResult {
-            case let .success(response):
-                receivedProductsResponse = response
-                exp.fulfill()
-            case .failure:
-                XCTFail("expected success, received failure instead.")
-            }
-        }
-        request.completeWith(expectedProductsResponse)
-        
-        wait(for: [exp], timeout: 0.1)
-        XCTAssertEqual(receivedProductsResponse, expectedProductsResponse)
+        expect(sut, toCompleteWith: .success(expectedProductsResponse), when: {
+            request.completeWith(expectedProductsResponse)
+        })
     }
     
     func test_fetchProducts_doesNotMakeNewRequestWhileProductsAreBeingFetched() {}
@@ -93,6 +70,23 @@ class StoreLoaderTests: XCTestCase {
         let request = ProductsRequestSpy()
         let sut = StoreLoader(request: request)
         return (request, sut)
+    }
+    
+    private func expect(_ sut: StoreLoader, toCompleteWith expectedResult: StoreLoader.ProductsResult, when action: () -> Void, file: StaticString = #filePath, line: UInt = #line) {
+        
+        sut.completion = { receivedResult in
+            switch (receivedResult, expectedResult) {
+            case let (.success(receivedResponse), .success(expectedResponse)):
+                XCTAssertEqual(receivedResponse, expectedResponse, file: file, line: line)
+                
+            case let (.failure(receivedError as NSError), .failure(expectedError as NSError)):
+                XCTAssertEqual(receivedError, expectedError, file: file, line: line)
+                
+            default:
+                XCTFail("Expected \(expectedResult), got \(receivedResult) instead", file: file, line: line)
+            }
+        }
+        action()
     }
     
     private func anyNSError() -> NSError {
