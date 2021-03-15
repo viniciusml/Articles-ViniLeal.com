@@ -27,15 +27,13 @@ class StoreLoaderAdapterTests: XCTestCase {
 class StoreLoaderTests: XCTestCase {
 
     func test_init_setsDelegate() {
-        let request = ProductsRequestSpy()
-        let sut = StoreLoader(request: request)
+        let (request, sut) = makeSUT()
 
         XCTAssertTrue(request.delegate === sut)
     }
     
     func test_fetchProducts_startsRequest() {
-        let request = ProductsRequestSpy()
-        let sut = StoreLoader(request: request)
+        let (request, sut) = makeSUT()
         
         sut.fetchProducts()
         
@@ -43,8 +41,7 @@ class StoreLoaderTests: XCTestCase {
     }
     
     func test_completeWithError_onRequestFailure() {
-        let request = ProductsRequestSpy()
-        let sut = StoreLoader(request: request)
+        let (request, sut) = makeSUT()
         let exp = expectation(description: "Wait for completion")
         var expectedError: NSError?
         
@@ -59,15 +56,27 @@ class StoreLoaderTests: XCTestCase {
                 exp.fulfill()
             }
         }
-        request.completeWith(NSError(domain: "test", code: 0))
+        request.completeWith(anyNSError())
         
         wait(for: [exp], timeout: 0.1)
-        XCTAssertEqual(expectedError, NSError(domain: "test", code: 0))
+        XCTAssertEqual(expectedError, anyNSError())
     }
     
     func test_completesWithProducts_onRequestSuccess() {}
     
     func test_fetchProducts_doesNotMakeNewRequestWhileProductsAreBeingFetched() {}
+    
+    // MARK: - Helpers
+    
+    private func makeSUT() -> (request: ProductsRequestSpy, sut: StoreLoader) {
+        let request = ProductsRequestSpy()
+        let sut = StoreLoader(request: request)
+        return (request, sut)
+    }
+    
+    private func anyNSError() -> NSError {
+        NSError(domain: "test", code: 0)
+    }
 }
 
 class ProductsRequestSpy: SKProductsRequest {
