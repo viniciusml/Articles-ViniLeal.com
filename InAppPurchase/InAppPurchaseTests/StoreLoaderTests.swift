@@ -42,9 +42,32 @@ class StoreLoaderTests: XCTestCase {
         XCTAssertEqual(request.messages, [.start])
     }
     
-    func test_completesWithError_onRequestFailure() {
+    func test_completeWithError_onRequestFailure() {
+        let request = ProductsRequestSpy()
+        let sut = StoreLoader(request: request)
+        let exp = expectation(description: "Wait for completion")
+        var expectedError: NSError?
         
+        sut.fetchProducts()
+        
+        sut.completion = { receivedResult in
+            switch receivedResult {
+            case .success:
+                XCTFail("expected failure, received success instead.")
+            case let .failure(error as NSError):
+                expectedError = error
+                exp.fulfill()
+            }
+        }
+        request.completeWith(NSError(domain: "test", code: 0))
+        
+        wait(for: [exp], timeout: 0.1)
+        XCTAssertEqual(expectedError, NSError(domain: "test", code: 0))
     }
+    
+    func test_completesWithProducts_onRequestSuccess() {}
+    
+    func test_fetchProducts_doesNotMakeNewRequestWhileProductsAreBeingFetched() {}
 }
 
 class ProductsRequestSpy: SKProductsRequest {
@@ -65,24 +88,14 @@ class ProductsRequestSpy: SKProductsRequest {
     
     override func start() {
         messages.append(.start)
-        complete()
+    }
+
+    public func completeWith(_ error: Error) {
+        delegate?.request!(self, didFailWithError: error)
     }
     
-    private func complete() {
-        if let error = error {
-            self.delegate?.request!(self, didFailWithError: error)
-        }
-        if let response = response {
-            self.delegate?.productsRequest(self, didReceive: response)
-        }
-    }
-    
-    func stubWith(_ error: Error) {
-        self.error = error
-    }
-    
-    func stubWith(_ response: SKProductsResponse) {
-        self.response = response
+    public func completeWith(_ response: SKProductsResponse) {
+        delegate?.productsRequest(self, didReceive: response)
     }
 }
 

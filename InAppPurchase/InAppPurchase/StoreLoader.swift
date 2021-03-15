@@ -21,7 +21,10 @@ public struct StoreLoaderFactory {
 }
 
 public class StoreLoader: NSObject {
+    public typealias ProductsResult = Result<SKProductsResponse, Error>
+    
     private var request: SKProductsRequest
+    public var completion: ((ProductsResult) -> Void)?
     
     public init(request: SKProductsRequest) {
         self.request = request
@@ -40,6 +43,6 @@ extension StoreLoader: SKProductsRequestDelegate {
     }
     
     public func request(_ request: SKRequest, didFailWithError error: Error) {
-        
+        completion?(.failure(error))
     }
 }
