@@ -62,7 +62,28 @@ class StoreLoaderTests: XCTestCase {
         XCTAssertEqual(expectedError, anyNSError())
     }
     
-    func test_completesWithProducts_onRequestSuccess() {}
+    func test_completesWithResponse_onRequestSuccess() {
+        let (request, sut) = makeSUT()
+        let expectedProductsResponse = anyProductsResponse(id: "test response")
+        let exp = expectation(description: "Wait for completion")
+        var receivedProductsResponse: SKProductsResponse?
+        
+        sut.fetchProducts()
+        
+        sut.completion = { receivedResult in
+            switch receivedResult {
+            case let .success(response):
+                receivedProductsResponse = response
+                exp.fulfill()
+            case .failure:
+                XCTFail("expected success, received failure instead.")
+            }
+        }
+        request.completeWith(expectedProductsResponse)
+        
+        wait(for: [exp], timeout: 0.1)
+        XCTAssertEqual(receivedProductsResponse, expectedProductsResponse)
+    }
     
     func test_fetchProducts_doesNotMakeNewRequestWhileProductsAreBeingFetched() {}
     
@@ -76,6 +97,19 @@ class StoreLoaderTests: XCTestCase {
     
     private func anyNSError() -> NSError {
         NSError(domain: "test", code: 0)
+    }
+    
+    private func anyProductsResponse(id: String) -> SKProductsResponse {
+        FakeProductsResponse(id: id)
+    }
+}
+
+class FakeProductsResponse: SKProductsResponse {
+    private(set) var responseID: String
+    
+    init(id: String) {
+        self.responseID = id
+        super.init()
     }
 }
 
