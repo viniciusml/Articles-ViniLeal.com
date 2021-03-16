@@ -78,9 +78,7 @@ class StoreLoaderTests: XCTestCase {
         sut.completion = { receivedResult in
             switch (receivedResult, expectedResult) {
             case let (.success(receivedProducts), .success(expectedProducts)):
-                let receivedIds = receivedProducts.map { $0.productIdentifier }.sorted()
-                let expectedIds = expectedProducts.map { $0.productIdentifier }.sorted()
-                XCTAssertEqual(receivedIds, expectedIds, file: file, line: line)
+                XCTAssertEqual(receivedProducts.sortedIDs, expectedProducts.sortedIDs, file: file, line: line)
                 
             case let (.failure(receivedError as NSError), .failure(expectedError as NSError)):
                 XCTAssertEqual(receivedError, expectedError, file: file, line: line)
@@ -163,5 +161,11 @@ class ProductsRequestSpy: SKProductsRequest {
 extension ProductsRequestSpy {
     static var any: ProductsRequestSpy {
         ProductsRequestSpy(productIdentifiers: Set<String>())
+    }
+}
+
+private extension Array where Element == SKProduct {
+    var sortedIDs: [String] {
+        map { $0.productIdentifier }.sorted()
     }
 }
