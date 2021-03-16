@@ -21,7 +21,7 @@ public struct StoreLoaderFactory {
 }
 
 public class StoreLoader: NSObject {
-    public typealias ProductsResult = Result<SKProductsResponse, Error>
+    public typealias ProductsResult = Result<[SKProduct], Error>
     
     private var request: SKProductsRequest
     public var completion: ((ProductsResult) -> Void)?
@@ -39,10 +39,14 @@ public class StoreLoader: NSObject {
 
 extension StoreLoader: SKProductsRequestDelegate {
     public func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
-        completion?(.success(response))
+        completion?(.success(response.products))
     }
     
     public func request(_ request: SKRequest, didFailWithError error: Error) {
         completion?(.failure(error))
+    }
+    
+    public func requestDidFinish(_ request: SKRequest) {
+        
     }
 }

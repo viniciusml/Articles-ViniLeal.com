@@ -53,11 +53,12 @@ class StoreLoaderTests: XCTestCase {
     
     func test_completesWithResponse_onRequestSuccess() {
         let (request, sut) = makeSUT()
-        let expectedProductsResponse = anyProductsResponse(id: "test response")
+        let expectedProductsResponse = makeProductsResponse(productIDs: Set(arrayLiteral: "product1", "product2"))
+        let expectedProducts = [makeProduct(id: "product1"), makeProduct(id: "product2")]
         
         sut.fetchProducts()
         
-        expect(sut, toCompleteWith: .success(expectedProductsResponse), when: {
+        expect(sut, toCompleteWith: .success(expectedProducts), when: {
             request.completeWith(expectedProductsResponse)
         })
     }
@@ -76,8 +77,10 @@ class StoreLoaderTests: XCTestCase {
         
         sut.completion = { receivedResult in
             switch (receivedResult, expectedResult) {
-            case let (.success(receivedResponse), .success(expectedResponse)):
-                XCTAssertEqual(receivedResponse, expectedResponse, file: file, line: line)
+            case let (.success(receivedProducts), .success(expectedProducts)):
+                let receivedIds = receivedProducts.map { $0.productIdentifier }.sorted()
+                let expectedIds = expectedProducts.map { $0.productIdentifier }.sorted()
+                XCTAssertEqual(receivedIds, expectedIds, file: file, line: line)
                 
             case let (.failure(receivedError as NSError), .failure(expectedError as NSError)):
                 XCTAssertEqual(receivedError, expectedError, file: file, line: line)
@@ -93,17 +96,38 @@ class StoreLoaderTests: XCTestCase {
         NSError(domain: "test", code: 0)
     }
     
-    private func anyProductsResponse(id: String) -> SKProductsResponse {
-        FakeProductsResponse(id: id)
+    private func makeProductsResponse(productIDs: Set<String>) -> SKProductsResponse {
+        FakeProductsResponse(productIdentifiers: productIDs)
+    }
+    
+    private func makeProduct(id: String) -> FakeProduct {
+        FakeProduct(fakeProductIdentifier: id)
     }
 }
 
 class FakeProductsResponse: SKProductsResponse {
-    private(set) var responseID: String
+    private let fakeProducts: [FakeProduct]
     
-    init(id: String) {
-        self.responseID = id
+    init(productIdentifiers: Set<String>) {
+        self.fakeProducts = productIdentifiers.map { FakeProduct(fakeProductIdentifier: $0) }
         super.init()
+    }
+    
+    override var products: [SKProduct] {
+        fakeProducts
+    }
+}
+
+class FakeProduct: SKProduct {
+    private let fakeProductIdentifier: String
+    
+    init(fakeProductIdentifier: String) {
+        self.fakeProductIdentifier = fakeProductIdentifier
+        super.init()
+    }
+    
+    override var productIdentifier: String {
+        fakeProductIdentifier
     }
 }
 
