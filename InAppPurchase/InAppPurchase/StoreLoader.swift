@@ -44,9 +44,10 @@ extension StoreLoader: SKProductsRequestDelegate {
     
     public func request(_ request: SKRequest, didFailWithError error: Error) {
         completion?(.failure(error))
+        requestDidFinish(request)
     }
     
     public func requestDidFinish(_ request: SKRequest) {
-        
+        request.cancel()
     }
 }

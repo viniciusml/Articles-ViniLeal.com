@@ -72,6 +72,16 @@ class StoreLoaderTests: XCTestCase {
         XCTAssertEqual(request.messages, [.start, .start])
     }
     
+    func test_completeWithError_cancelsRequest() {
+        let (request, sut) = makeSUT()
+        let expectedError = anyNSError()
+        
+        sut.fetchProducts()
+        request.completeWith(expectedError)
+        
+        XCTAssertEqual(request.messages, [.start, .cancel])
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT() -> (request: ProductsRequestSpy, sut: StoreLoader) {
@@ -138,7 +148,7 @@ class FakeProduct: SKProduct {
 
 class ProductsRequestSpy: SKProductsRequest {
     enum Message {
-        case start
+        case start, cancel
     }
     
     private var error: Error?
@@ -154,6 +164,10 @@ class ProductsRequestSpy: SKProductsRequest {
     
     override func start() {
         messages.append(.start)
+    }
+    
+    override func cancel() {
+        messages.append(.cancel)
     }
 
     public func completeWith(_ error: Error) {
