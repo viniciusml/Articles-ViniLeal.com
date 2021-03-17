@@ -63,7 +63,14 @@ class StoreLoaderTests: XCTestCase {
         })
     }
     
-    func test_fetchProducts_doesNotMakeNewRequestWhileProductsAreBeingFetched() {}
+    func test_fetchProductsTwice_performsRequestTwice() {
+        let (request, sut) = makeSUT()
+        
+        sut.fetchProducts()
+        sut.fetchProducts()
+        
+        XCTAssertEqual(request.messages, [.start, .start])
+    }
     
     // MARK: - Helpers
     
