@@ -7,13 +7,10 @@
 
 import StoreKit
 
-// We could use an abstract factory, or an Adapter, which can drastically simplify the design. With a factory, your code needs to ask an object to return something. With an adapter, you tell objects to do somthing.
-
-// The interface we want is 'fetchProducts(with identifiers: [String])'
 public struct StoreLoaderFactory {
     public static func make(
         with identifiers: [String],
-        request: (Set<String>) -> SKProductsRequest
+        request: (Set<String>) -> SKProductsRequest = SKProductsRequest.init(productIdentifiers:)
     ) -> SKProductsRequest {
         
         request(Set(identifiers))

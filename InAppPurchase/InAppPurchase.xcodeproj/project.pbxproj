@@ -12,6 +12,7 @@
 		D849AAA125F6D2A3001DA349 /* Array+SKPaymentTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = D849AAA025F6D2A3001DA349 /* Array+SKPaymentTransaction.swift */; };
 		D849AAA825F6D301001DA349 /* StoreLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D849AAA725F6D301001DA349 /* StoreLoader.swift */; };
 		D849AAAC25F6D30E001DA349 /* StoreLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D849AAAB25F6D30E001DA349 /* StoreLoaderTests.swift */; };
+		D876E10E2603F6E5007119B8 /* PurchaseIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D876E10D2603F6E5007119B8 /* PurchaseIntegrationTests.swift */; };
 		D8842F6625D08A76002ADA97 /* StoreObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8842F6525D08A76002ADA97 /* StoreObserver.swift */; };
 /* End PBXBuildFile section */
 
@@ -34,6 +35,7 @@
 		D849AAA025F6D2A3001DA349 /* Array+SKPaymentTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+SKPaymentTransaction.swift"; sourceTree = "<group>"; };
 		D849AAA725F6D301001DA349 /* StoreLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreLoader.swift; sourceTree = "<group>"; };
 		D849AAAB25F6D30E001DA349 /* StoreLoaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreLoaderTests.swift; sourceTree = "<group>"; };
+		D876E10D2603F6E5007119B8 /* PurchaseIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseIntegrationTests.swift; sourceTree = "<group>"; };
 		D8842F6525D08A76002ADA97 /* StoreObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreObserver.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -91,6 +93,7 @@
 				D8054F9225C3600C00476E9A /* Info.plist */,
 				D8054FA025C363AB00476E9A /* StoreObserverTests.swift */,
 				D849AAAB25F6D30E001DA349 /* StoreLoaderTests.swift */,
+				D876E10D2603F6E5007119B8 /* PurchaseIntegrationTests.swift */,
 			);
 			path = InAppPurchaseTests;
 			sourceTree = "<group>";
@@ -214,6 +217,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D876E10E2603F6E5007119B8 /* PurchaseIntegrationTests.swift in Sources */,
 				D8054FA125C363AB00476E9A /* StoreObserverTests.swift in Sources */,
 				D849AAAC25F6D30E001DA349 /* StoreLoaderTests.swift in Sources */,
 			);
@@ -282,7 +286,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -340,7 +344,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;

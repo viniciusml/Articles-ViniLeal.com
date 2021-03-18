@@ -3,7 +3,7 @@
 //  InAppPurchaseTests
 //
 //  Created by Vinicius Moreira Leal on 28/01/2021.
-//  For end to end test: https://www.revenuecat.com/blog/storekit-testing-in-xcode
+//
 
 import InAppPurchase
 import StoreKit
