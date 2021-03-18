@@ -1,5 +1,5 @@
 //
-//  StoreLoaderTests.swift
+//  ProductLoaderTests.swift
 //  InAppPurchaseTests
 //
 //  Created by Vinicius Moreira Leal on 08/03/2021.
@@ -9,22 +9,7 @@ import InAppPurchase
 import StoreKit
 import XCTest
 
-class StoreLoaderAdapterTests: XCTestCase {
-    
-    func test_adapter_createsProperRequest() {
-        let identifiers = ["id1", "id2"]
-        
-        _ = StoreLoaderFactory.make(
-            with: identifiers,
-            request: { mappedIdentifiers in
-                
-                XCTAssertTrue(mappedIdentifiers.isSubset(of: identifiers))
-                return ProductsRequestSpy.any
-            })
-    }
-}
-
-class StoreLoaderTests: XCTestCase {
+class ProductLoaderTests: XCTestCase {
 
     func test_init_setsDelegate() {
         let (request, sut) = makeSUT()
@@ -84,13 +69,13 @@ class StoreLoaderTests: XCTestCase {
     
     // MARK: - Helpers
     
-    private func makeSUT() -> (request: ProductsRequestSpy, sut: StoreLoader) {
+    private func makeSUT() -> (request: ProductsRequestSpy, sut: ProductLoader) {
         let request = ProductsRequestSpy()
-        let sut = StoreLoader(request: request)
+        let sut = ProductLoader(request: request)
         return (request, sut)
     }
     
-    private func expect(_ sut: StoreLoader, toCompleteWith expectedResult: StoreLoader.ProductsResult, when action: () -> Void, file: StaticString = #filePath, line: UInt = #line) {
+    private func expect(_ sut: ProductLoader, toCompleteWith expectedResult: ProductLoader.ProductsResult, when action: () -> Void, file: StaticString = #filePath, line: UInt = #line) {
         
         sut.completion = { receivedResult in
             switch (receivedResult, expectedResult) {

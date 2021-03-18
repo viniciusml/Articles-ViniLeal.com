@@ -7,7 +7,7 @@
 
 import StoreKit
 
-public class StoreObserver: NSObject {
+public class PaymentTransactionObserver: NSObject {
     
     let queue: SKPaymentQueue
     
@@ -37,7 +37,7 @@ public class StoreObserver: NSObject {
     }
 }
 
-extension StoreObserver: SKPaymentTransactionObserver {
+extension PaymentTransactionObserver: SKPaymentTransactionObserver {
     
     public func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
         

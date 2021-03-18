@@ -7,7 +7,7 @@
 
 import StoreKit
 
-public struct StoreLoaderFactory {
+public struct ProductRequestFactory {
     public static func make(
         with identifiers: [String],
         request: (Set<String>) -> SKProductsRequest = SKProductsRequest.init(productIdentifiers:)
@@ -17,7 +17,7 @@ public struct StoreLoaderFactory {
     }
 }
 
-public class StoreLoader: NSObject {
+public class ProductLoader: NSObject {
     public typealias ProductsResult = Result<[SKProduct], Error>
     
     private var request: SKProductsRequest
@@ -34,7 +34,7 @@ public class StoreLoader: NSObject {
     }
 }
 
-extension StoreLoader: SKProductsRequestDelegate {
+extension ProductLoader: SKProductsRequestDelegate {
     public func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
         completion?(.success(response.products))
     }

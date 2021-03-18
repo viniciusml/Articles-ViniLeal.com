@@ -1,5 +1,5 @@
 //
-//  StoreObserverTests.swift
+//  PaymentTransactionObserverTests.swift
 //  InAppPurchaseTests
 //
 //  Created by Vinicius Moreira Leal on 28/01/2021.
@@ -9,7 +9,7 @@ import InAppPurchase
 import StoreKit
 import XCTest
 
-class StoreObserverTests: XCTestCase {
+class PaymentTransactionObserverTests: XCTestCase {
     
     func test_buy_addsPaymentRequestToQueue() {
         let (queue, sut) = makeSUT()
@@ -63,9 +63,9 @@ class StoreObserverTests: XCTestCase {
     
     // MARK: Helpers
     
-    private func makeSUT() -> (PaymentQueueSpy, StoreObserver) {
+    private func makeSUT() -> (PaymentQueueSpy, PaymentTransactionObserver) {
         let queue = PaymentQueueSpy()
-        let sut = StoreObserver(queue: queue)
+        let sut = PaymentTransactionObserver(queue: queue)
         return (queue, sut)
     }
     
