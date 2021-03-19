@@ -16,9 +16,12 @@ public struct PaymentTransaction: Equatable {
     
     public let state: State
     public let identifier: String
+    
+    static func transaction(_ state: State, _ identifier: String) -> PaymentTransaction {
+        PaymentTransaction(state: state, identifier: identifier)
+    }
 }
 
-// TODO: Add completion for this.
 public class PaymentTransactionObserver: NSObject {
     
     private let queue: SKPaymentQueue
@@ -41,22 +44,21 @@ public class PaymentTransactionObserver: NSObject {
     }
     
     private func purchased(_ transaction: SKPaymentTransaction) {
-        completion?(PaymentTransaction(state: .purchased, identifier: transaction.payment.productIdentifier))
+        completion?(.transaction(.purchased, transaction.payment.productIdentifier))
         queue.finishTransaction(transaction)
     }
     
     private func failed(_ transaction: SKPaymentTransaction) {
-        guard let transactionError = transaction.error as NSError?,
-              transactionError.code != SKError.paymentCancelled.rawValue else { return }
+        guard transaction.paymentWasNotCancelled else { return }
         
-        completion?(PaymentTransaction(state: .failed, identifier: transaction.payment.productIdentifier))
+        completion?(.transaction(.failed, transaction.payment.productIdentifier))
         queue.finishTransaction(transaction)
     }
     
     private func restored(_ transaction: SKPaymentTransaction) {
         guard let productIdentifier = transaction.original?.payment.productIdentifier else { return }
         
-        completion?(PaymentTransaction(state: .restored, identifier: productIdentifier))
+        completion?(.transaction(.restored, productIdentifier))
         queue.finishTransaction(transaction)
     }
 }
@@ -66,5 +68,12 @@ extension PaymentTransactionObserver: SKPaymentTransactionObserver {
     public func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
         
         transactions.handle(purchased, failed, restored)
+    }
+}
+
+private extension SKPaymentTransaction {
+    var paymentWasNotCancelled: Bool {
+        guard let transactionError = error as NSError? else { return false }
+        return transactionError.code != SKError.paymentCancelled.rawValue
     }
 }
