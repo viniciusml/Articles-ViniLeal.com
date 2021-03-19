@@ -46,6 +46,9 @@ public class PaymentTransactionObserver: NSObject {
     }
     
     private func failed(_ transaction: SKPaymentTransaction) {
+        guard let transactionError = transaction.error as NSError?,
+              transactionError.code != SKError.paymentCancelled.rawValue else { return }
+        
         completion?(PaymentTransaction(state: .failed, identifier: transaction.payment.productIdentifier))
         queue.finishTransaction(transaction)
     }

@@ -73,6 +73,18 @@ class PaymentTransactionObserverTests: XCTestCase {
         XCTAssertEqual(queue.messages, [.finish])
     }
     
+    func test_updatedTransactions_failedWithCancellation_doesNotMessageQueue() {
+        let (queue, sut) = makeSUT()
+        let identifier = "a failed product identifier"
+        let error = NSError(domain: "test error", code: SKError.paymentCancelled.rawValue)
+        
+        expect(sut, toNotCompleteWhen: {
+            sut.paymentQueue(queue, updatedTransactions: [.failed(error: error, identifier: identifier)])
+        })
+        
+        XCTAssertTrue(queue.messages.isEmpty)
+    }
+    
     func test_updatedTransactions_restoredWithOriginal_messagesQueue() {
         let (queue, sut) = makeSUT()
         let identifier = "a restored product identifier"
@@ -87,10 +99,11 @@ class PaymentTransactionObserverTests: XCTestCase {
     func test_updatedTransactions_restoredWithoutOriginal_doesNotMessageQueue() {
         let (queue, sut) = makeSUT()
         
-        sut.paymentQueue(queue, updatedTransactions: [.restored(originalIdentifier: nil)])
+        expect(sut, toNotCompleteWhen: {
+            sut.paymentQueue(queue, updatedTransactions: [.restored(originalIdentifier: nil)])
+        })
         
         XCTAssertTrue(queue.messages.isEmpty)
-        XCTAssertNil(sut.completion)
     }
     
     // MARK: Helpers
@@ -113,6 +126,14 @@ class PaymentTransactionObserverTests: XCTestCase {
         action()
         
         wait(for: [exp], timeout: 0.1)
+    }
+    
+    private func expect(_ sut: PaymentTransactionObserver, toNotCompleteWhen action: () -> Void, file: StaticString = #filePath, line: UInt = #line) {
+        
+        sut.completion = {
+            XCTFail("SUT should not complete, completed with: \($0) instead", file: file, line: line)
+        }
+        action()
     }
     
     private class PaymentQueueSpy: SKPaymentQueue {
