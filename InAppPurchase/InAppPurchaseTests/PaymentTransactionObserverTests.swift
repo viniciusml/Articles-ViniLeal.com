@@ -5,9 +5,15 @@
 //  Created by Vinicius Moreira Leal on 28/01/2021.
 //
 
-import InAppPurchase
+@testable import InAppPurchase // TODO: - Remove Testable
 import StoreKit
 import XCTest
+
+extension PaymentTransaction {
+    static func make(_ state: PaymentTransaction.State, with identifier: String) -> PaymentTransaction {
+        PaymentTransaction(state: state, identifier: identifier)
+    }
+}
 
 class PaymentTransactionObserverTests: XCTestCase {
     
@@ -59,16 +65,26 @@ class PaymentTransactionObserverTests: XCTestCase {
         
         wait(for: [exp], timeout: 0.1)
         XCTAssertEqual(queue.messages, [.finish])
-        XCTAssertEqual(expectedTransaction?.identifier, identifier)
+        XCTAssertEqual(expectedTransaction, .make(.purchased, with: identifier))
     }
     
     func test_updatedTransactions_failed_messagesQueue() {
         let (queue, sut) = makeSUT()
+        let identifier = "a failed product identifier"
         let error = NSError(domain: "test error", code: 0)
+        let exp = expectation(description: "wait for completion")
+        var expectedTransaction: PaymentTransaction?
         
-        sut.paymentQueue(queue, updatedTransactions: [.failed(error: error)])
+        sut.completion = { transaction in
+            expectedTransaction = transaction
+            exp.fulfill()
+        }
         
+        sut.paymentQueue(queue, updatedTransactions: [.failed(error: error, identifier: identifier)])
+        
+        wait(for: [exp], timeout: 0.1)
         XCTAssertEqual(queue.messages, [.finish])
+        XCTAssertEqual(expectedTransaction, .make(.failed, with: identifier))
     }
     
     func test_updatedTransactions_restored_messagesQueue() {
@@ -129,8 +145,8 @@ extension SKPaymentTransaction {
     static let deferred = makeTestTransaction(.deferred)
     static func purchased(identifier: String) -> SKPaymentTransaction { makeTestTransaction(.purchased, identifier: identifier)
     }
-    static func failed(error: Error) -> SKPaymentTransaction {
-        makeTestTransaction(.failed, error: error)
+    static func failed(error: Error, identifier: String) -> SKPaymentTransaction {
+        makeTestTransaction(.failed, identifier: identifier, error: error)
     }
     static func restored(originalIdentifier: String) -> SKPaymentTransaction {
         makeTestTransaction(.restored, originalIdentifier: originalIdentifier)

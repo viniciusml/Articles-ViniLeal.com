@@ -7,11 +7,11 @@
 
 import StoreKit
 
-public struct PaymentTransaction {
-    public enum State {
+public struct PaymentTransaction: Equatable {
+    public enum State: Equatable {
         case purchased
         case restored
-        case failed(Error)
+        case failed
     }
     
     public let state: State
@@ -46,6 +46,7 @@ public class PaymentTransactionObserver: NSObject {
     }
     
     private func failed(_ transaction: SKPaymentTransaction) {
+        completion?(PaymentTransaction(state: .failed, identifier: transaction.payment.productIdentifier))
         queue.finishTransaction(transaction)
     }
     
