@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		D8054F8C25C3600C00476E9A /* InAppPurchase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8054F8225C3600B00476E9A /* InAppPurchase.framework */; };
 		D8054FA125C363AB00476E9A /* PaymentTransactionObserverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8054FA025C363AB00476E9A /* PaymentTransactionObserverTests.swift */; };
+		D809071726056D72007A047A /* PaymentTransaction+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D809071626056D72007A047A /* PaymentTransaction+Extension.swift */; };
+		D809071B26056DA0007A047A /* PaymentTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = D809071A26056DA0007A047A /* PaymentTransaction.swift */; };
 		D849AAA125F6D2A3001DA349 /* Array+SKPaymentTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = D849AAA025F6D2A3001DA349 /* Array+SKPaymentTransaction.swift */; };
 		D849AAA825F6D301001DA349 /* ProductLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D849AAA725F6D301001DA349 /* ProductLoader.swift */; };
 		D849AAAC25F6D30E001DA349 /* ProductLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D849AAAB25F6D30E001DA349 /* ProductLoaderTests.swift */; };
@@ -33,6 +35,8 @@
 		D8054F8B25C3600C00476E9A /* InAppPurchaseTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InAppPurchaseTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8054F9225C3600C00476E9A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D8054FA025C363AB00476E9A /* PaymentTransactionObserverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentTransactionObserverTests.swift; sourceTree = "<group>"; };
+		D809071626056D72007A047A /* PaymentTransaction+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PaymentTransaction+Extension.swift"; sourceTree = "<group>"; };
+		D809071A26056DA0007A047A /* PaymentTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentTransaction.swift; sourceTree = "<group>"; };
 		D849AAA025F6D2A3001DA349 /* Array+SKPaymentTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+SKPaymentTransaction.swift"; sourceTree = "<group>"; };
 		D849AAA725F6D301001DA349 /* ProductLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductLoader.swift; sourceTree = "<group>"; };
 		D849AAAB25F6D30E001DA349 /* ProductLoaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductLoaderTests.swift; sourceTree = "<group>"; };
@@ -85,6 +89,7 @@
 				D8842F6525D08A76002ADA97 /* PaymentTransactionObserver.swift */,
 				D849AAA025F6D2A3001DA349 /* Array+SKPaymentTransaction.swift */,
 				D849AAA725F6D301001DA349 /* ProductLoader.swift */,
+				D809071A26056DA0007A047A /* PaymentTransaction.swift */,
 			);
 			path = InAppPurchase;
 			sourceTree = "<group>";
@@ -97,6 +102,7 @@
 				D849AAAB25F6D30E001DA349 /* ProductLoaderTests.swift */,
 				D876E10D2603F6E5007119B8 /* PurchaseIntegrationTests.swift */,
 				D876E1252603FB72007119B8 /* ProductRequestFactoryTests.swift */,
+				D809071626056D72007A047A /* PaymentTransaction+Extension.swift */,
 			);
 			path = InAppPurchaseTests;
 			sourceTree = "<group>";
@@ -213,6 +219,7 @@
 				D849AAA825F6D301001DA349 /* ProductLoader.swift in Sources */,
 				D849AAA125F6D2A3001DA349 /* Array+SKPaymentTransaction.swift in Sources */,
 				D8842F6625D08A76002ADA97 /* PaymentTransactionObserver.swift in Sources */,
+				D809071B26056DA0007A047A /* PaymentTransaction.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -224,6 +231,7 @@
 				D876E10E2603F6E5007119B8 /* PurchaseIntegrationTests.swift in Sources */,
 				D8054FA125C363AB00476E9A /* PaymentTransactionObserverTests.swift in Sources */,
 				D849AAAC25F6D30E001DA349 /* ProductLoaderTests.swift in Sources */,
+				D809071726056D72007A047A /* PaymentTransaction+Extension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

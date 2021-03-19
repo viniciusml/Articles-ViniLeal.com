@@ -5,15 +5,9 @@
 //  Created by Vinicius Moreira Leal on 28/01/2021.
 //
 
-@testable import InAppPurchase // TODO: - Remove Testable
+import InAppPurchase
 import StoreKit
 import XCTest
-
-extension PaymentTransaction {
-    static func make(_ state: PaymentTransaction.State, with identifier: String) -> PaymentTransaction {
-        PaymentTransaction(state: state, identifier: identifier)
-    }
-}
 
 class PaymentTransactionObserverTests: XCTestCase {
     
