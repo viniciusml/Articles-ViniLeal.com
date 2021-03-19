@@ -8,14 +8,14 @@
 import StoreKit
 
 public struct PaymentTransaction {
-    enum State {
+    public enum State {
         case purchased
         case restored
         case failed(Error)
     }
     
-    let state: State
-    let identifier: String
+    public let state: State
+    public let identifier: String
 }
 
 // TODO: Add completion for this.
@@ -41,6 +41,7 @@ public class PaymentTransactionObserver: NSObject {
     }
     
     private func purchased(_ transaction: SKPaymentTransaction) {
+        completion?(PaymentTransaction(state: .purchased, identifier: transaction.payment.productIdentifier))
         queue.finishTransaction(transaction)
     }
     

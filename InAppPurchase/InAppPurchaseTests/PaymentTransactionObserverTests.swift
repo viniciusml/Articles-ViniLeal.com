@@ -47,10 +47,19 @@ class PaymentTransactionObserverTests: XCTestCase {
     func test_updatedTransactions_purchased_messagesQueue() {
         let (queue, sut) = makeSUT()
         let identifier = "a product identifier"
+        let exp = expectation(description: "wait for completion")
+        var expectedTransaction: PaymentTransaction?
+        
+        sut.completion = { transaction in
+            expectedTransaction = transaction
+            exp.fulfill()
+        }
         
         sut.paymentQueue(queue, updatedTransactions: [.purchased(identifier: identifier)])
         
+        wait(for: [exp], timeout: 0.1)
         XCTAssertEqual(queue.messages, [.finish])
+        XCTAssertEqual(expectedTransaction?.identifier, identifier)
     }
     
     func test_updatedTransactions_failed_messagesQueue() {
