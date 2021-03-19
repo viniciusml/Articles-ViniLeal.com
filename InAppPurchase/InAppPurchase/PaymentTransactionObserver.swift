@@ -51,6 +51,9 @@ public class PaymentTransactionObserver: NSObject {
     }
     
     private func restored(_ transaction: SKPaymentTransaction) {
+        guard let productIdentifier = transaction.original?.payment.productIdentifier else { return }
+        
+        completion?(PaymentTransaction(state: .restored, identifier: productIdentifier))
         queue.finishTransaction(transaction)
     }
 }

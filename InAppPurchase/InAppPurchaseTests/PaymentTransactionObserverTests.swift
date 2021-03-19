@@ -73,11 +73,13 @@ class PaymentTransactionObserverTests: XCTestCase {
         XCTAssertEqual(queue.messages, [.finish])
     }
     
-    func test_updatedTransactions_restored_messagesQueue() {
+    func test_updatedTransactions_restoredWithOriginal_messagesQueue() {
         let (queue, sut) = makeSUT()
         let identifier = "a restored product identifier"
         
-        sut.paymentQueue(queue, updatedTransactions: [.restored(originalIdentifier: identifier)])
+        expect(sut, toCompleteWith: .make(.restored, with: identifier), when: {
+            sut.paymentQueue(queue, updatedTransactions: [.restored(originalIdentifier: identifier)])
+        })
         
         XCTAssertEqual(queue.messages, [.finish])
     }
