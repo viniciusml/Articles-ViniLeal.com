@@ -84,6 +84,15 @@ class PaymentTransactionObserverTests: XCTestCase {
         XCTAssertEqual(queue.messages, [.finish])
     }
     
+    func test_updatedTransactions_restoredWithoutOriginal_doesNotMessageQueue() {
+        let (queue, sut) = makeSUT()
+        
+        sut.paymentQueue(queue, updatedTransactions: [.restored(originalIdentifier: nil)])
+        
+        XCTAssertTrue(queue.messages.isEmpty)
+        XCTAssertNil(sut.completion)
+    }
+    
     // MARK: Helpers
     
     private func makeSUT() -> (PaymentQueueSpy, PaymentTransactionObserver) {
@@ -150,7 +159,7 @@ extension SKPaymentTransaction {
     static func failed(error: Error, identifier: String) -> SKPaymentTransaction {
         makeTestTransaction(.failed, identifier: identifier, error: error)
     }
-    static func restored(originalIdentifier: String) -> SKPaymentTransaction {
+    static func restored(originalIdentifier: String?) -> SKPaymentTransaction {
         makeTestTransaction(.restored, originalIdentifier: originalIdentifier)
     }
     
