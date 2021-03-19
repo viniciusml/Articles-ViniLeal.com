@@ -53,38 +53,24 @@ class PaymentTransactionObserverTests: XCTestCase {
     func test_updatedTransactions_purchased_messagesQueue() {
         let (queue, sut) = makeSUT()
         let identifier = "a product identifier"
-        let exp = expectation(description: "wait for completion")
-        var expectedTransaction: PaymentTransaction?
         
-        sut.completion = { transaction in
-            expectedTransaction = transaction
-            exp.fulfill()
-        }
+        expect(sut, toCompleteWith: .make(.purchased, with: identifier), when: {
+            sut.paymentQueue(queue, updatedTransactions: [.purchased(identifier: identifier)])
+        })
         
-        sut.paymentQueue(queue, updatedTransactions: [.purchased(identifier: identifier)])
-        
-        wait(for: [exp], timeout: 0.1)
         XCTAssertEqual(queue.messages, [.finish])
-        XCTAssertEqual(expectedTransaction, .make(.purchased, with: identifier))
     }
     
     func test_updatedTransactions_failed_messagesQueue() {
         let (queue, sut) = makeSUT()
         let identifier = "a failed product identifier"
         let error = NSError(domain: "test error", code: 0)
-        let exp = expectation(description: "wait for completion")
-        var expectedTransaction: PaymentTransaction?
         
-        sut.completion = { transaction in
-            expectedTransaction = transaction
-            exp.fulfill()
-        }
+        expect(sut, toCompleteWith: .make(.failed, with: identifier), when: {
+            sut.paymentQueue(queue, updatedTransactions: [.failed(error: error, identifier: identifier)])
+        })
         
-        sut.paymentQueue(queue, updatedTransactions: [.failed(error: error, identifier: identifier)])
-        
-        wait(for: [exp], timeout: 0.1)
         XCTAssertEqual(queue.messages, [.finish])
-        XCTAssertEqual(expectedTransaction, .make(.failed, with: identifier))
     }
     
     func test_updatedTransactions_restored_messagesQueue() {
@@ -102,6 +88,20 @@ class PaymentTransactionObserverTests: XCTestCase {
         let queue = PaymentQueueSpy()
         let sut = PaymentTransactionObserver(queue: queue)
         return (queue, sut)
+    }
+    
+    private func expect(_ sut: PaymentTransactionObserver, toCompleteWith expectedTransaction: PaymentTransaction, when action: () -> Void, file: StaticString = #filePath, line: UInt = #line) {
+        let exp = expectation(description: "wait for completion")
+        var receivedTransaction: PaymentTransaction?
+        
+        sut.completion = {
+            receivedTransaction = $0
+            exp.fulfill()
+            XCTAssertEqual(receivedTransaction, expectedTransaction)
+        }
+        action()
+        
+        wait(for: [exp], timeout: 0.1)
     }
     
     private class PaymentQueueSpy: SKPaymentQueue {
