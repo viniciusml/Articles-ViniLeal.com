@@ -7,10 +7,22 @@
 
 import StoreKit
 
+public struct PaymentTransaction {
+    enum State {
+        case purchased
+        case restored
+        case failed(Error)
+    }
+    
+    let state: State
+    let identifier: String
+}
+
 // TODO: Add completion for this.
 public class PaymentTransactionObserver: NSObject {
     
-    let queue: SKPaymentQueue
+    private let queue: SKPaymentQueue
+    public var completion: ((PaymentTransaction) -> Void)?
     
     public init(queue: SKPaymentQueue = .default()) {
         self.queue = queue

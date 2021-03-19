@@ -41,28 +41,32 @@ class PaymentTransactionObserverTests: XCTestCase {
         sut.paymentQueue(queue, updatedTransactions: [.purchasing, .deferred])
         
         XCTAssertTrue(queue.messages.isEmpty)
+        XCTAssertNil(sut.completion)
     }
     
     func test_updatedTransactions_purchased_messagesQueue() {
         let (queue, sut) = makeSUT()
+        let identifier = "a product identifier"
         
-        sut.paymentQueue(queue, updatedTransactions: [.purchased])
+        sut.paymentQueue(queue, updatedTransactions: [.purchased(identifier: identifier)])
         
         XCTAssertEqual(queue.messages, [.finish])
     }
     
     func test_updatedTransactions_failed_messagesQueue() {
         let (queue, sut) = makeSUT()
+        let error = NSError(domain: "test error", code: 0)
         
-        sut.paymentQueue(queue, updatedTransactions: [.failed])
+        sut.paymentQueue(queue, updatedTransactions: [.failed(error: error)])
         
         XCTAssertEqual(queue.messages, [.finish])
     }
     
     func test_updatedTransactions_restored_messagesQueue() {
         let (queue, sut) = makeSUT()
+        let identifier = "a restored product identifier"
         
-        sut.paymentQueue(queue, updatedTransactions: [.restored])
+        sut.paymentQueue(queue, updatedTransactions: [.restored(originalIdentifier: identifier)])
         
         XCTAssertEqual(queue.messages, [.finish])
     }
@@ -114,24 +118,56 @@ class PaymentTransactionObserverTests: XCTestCase {
 extension SKPaymentTransaction {
     static let purchasing = makeTestTransaction(.purchasing)
     static let deferred = makeTestTransaction(.deferred)
-    static let purchased = makeTestTransaction(.purchased)
-    static let failed = makeTestTransaction(.failed)
-    static let restored = makeTestTransaction(.restored)
+    static func purchased(identifier: String) -> SKPaymentTransaction { makeTestTransaction(.purchased, identifier: identifier)
+    }
+    static func failed(error: Error) -> SKPaymentTransaction {
+        makeTestTransaction(.failed, error: error)
+    }
+    static func restored(originalIdentifier: String) -> SKPaymentTransaction {
+        makeTestTransaction(.restored, originalIdentifier: originalIdentifier)
+    }
     
-    private static func makeTestTransaction(_ state: SKPaymentTransactionState) -> SKPaymentTransaction {
-        TestTransaction(state: state)
+    private static func makeTestTransaction(
+        _ state: SKPaymentTransactionState,
+        identifier: String = "test id",
+        originalIdentifier: String? = nil,
+        error: Error? = nil) -> SKPaymentTransaction
+    {
+        TestTransaction(stubbedState: state, stubbedProductIdentifier: identifier, stubbedOriginalIdentifier: originalIdentifier, stubbedError: error)
     }
     
     private class TestTransaction: SKPaymentTransaction {
         
-        let state: SKPaymentTransactionState
+        private let stubbedState: SKPaymentTransactionState
+        private let stubbedOriginalIdentifier: String?
+        private let stubbedProductIdentifier: String
+        private let stubbedError: Error?
         
-        init(state: SKPaymentTransactionState) {
-            self.state = state
+        init(stubbedState: SKPaymentTransactionState,
+             stubbedProductIdentifier: String,
+             stubbedOriginalIdentifier: String?,
+             stubbedError: Error?) {
+            self.stubbedState = stubbedState
+            self.stubbedProductIdentifier = stubbedProductIdentifier
+            self.stubbedOriginalIdentifier = stubbedOriginalIdentifier
+            self.stubbedError = stubbedError
         }
         
         override var transactionState: SKPaymentTransactionState {
-            state
+            stubbedState
+        }
+        
+        override var error: Error? {
+            stubbedError
+        }
+        
+        override var original: SKPaymentTransaction? {
+            guard let identifier = stubbedOriginalIdentifier else { return nil }
+            return TestTransaction(stubbedState: .restored, stubbedProductIdentifier: identifier, stubbedOriginalIdentifier: identifier, stubbedError: nil)
+        }
+        
+        override var payment: SKPayment {
+            SKPayment(product: FakeProduct(fakeProductIdentifier: stubbedProductIdentifier))
         }
     }
 }
