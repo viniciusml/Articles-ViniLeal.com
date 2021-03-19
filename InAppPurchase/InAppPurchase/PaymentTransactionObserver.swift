@@ -7,6 +7,7 @@
 
 import StoreKit
 
+// TODO: Add completion for this.
 public class PaymentTransactionObserver: NSObject {
     
     let queue: SKPaymentQueue
