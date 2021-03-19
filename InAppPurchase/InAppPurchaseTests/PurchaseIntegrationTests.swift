@@ -20,43 +20,44 @@ class PurchaseIntegrationTests: XCTestCase {
 //        let session = try SKTestSession(configurationFileNamed: "RecipesAndCoins")
 //        session.resetToDefaultState()
 //        session.disableDialogs = true
-//        
+//
 //        session.interruptedPurchasesEnabled = true
 //        session.clearTransactions()
-//        
+//
 //        let identifier = Bakery.carrotCake
 //        let expectation = XCTestExpectation(description: "Wait for purchase")
-//        
-//        let purchaseObserver = StoreObserver()
-//        let purchaseLoader = StoreLoader(request: StoreLoaderFactory.make(with: [identifier]))
-//        
-//        var availableProduct: SKProduct?
+//
+//        let purchaseObserver = PaymentTransactionObserver()
+//        let purchaseLoader = ProductLoader(request: ProductRequestFactory.make(with: [identifier]))
+//
 //        purchaseLoader.fetchProducts()
 //        purchaseLoader.completion = { result in
 //            if let product = try? result.get().first {
-//                availableProducts.append(product)
+//
+//                purchaseObserver.buy(product)
+//                purchaseObserver.completion = { result in
+//
+//                }
 //            }
 //        }
-//        
-//        purchaseObserver.buy(availableProduct!)
-//        
-//        
+//
+//
 //        GreenBarContent.store.requestProductsAndBuy(
 //            productIdentifier: identifier
 //        ) { _ in
 //            let contentAvailable = GreenBarContent.store.receiptContains(identifier)
 //            let contentSaved = GreenBarContent.store.isProductPurchased(identifier)
-//            
+//
 //            XCTAssertFalse(
 //                contentAvailable,
 //                "Expected \(identifier) is not present in receipt")
 //            XCTAssertFalse(
 //                contentSaved,
 //                "Expected \(identifier) is not stored in PurchasedProducts")
-//            
+//
 //            expectation.fulfill()
 //        }
-//        
+//
 //        wait(for: [expectation], timeout: 60.0)
 //    }
 }

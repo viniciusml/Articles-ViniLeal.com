@@ -14,6 +14,9 @@ public class PaymentTransactionObserver: NSObject {
     
     public init(queue: SKPaymentQueue = .default()) {
         self.queue = queue
+        super.init()
+        
+        queue.add(self)
     }
     
     public func buy(_ product: SKProduct) {

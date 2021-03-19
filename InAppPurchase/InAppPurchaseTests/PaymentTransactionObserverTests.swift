@@ -11,6 +11,12 @@ import XCTest
 
 class PaymentTransactionObserverTests: XCTestCase {
     
+    func test_init_addsObserverToQueue() {
+        let (queue, sut) = makeSUT()
+        
+        XCTAssertTrue(queue.transactionObservers.first === sut)
+    }
+    
     func test_buy_addsPaymentRequestToQueue() {
         let (queue, sut) = makeSUT()
         
