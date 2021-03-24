@@ -17,6 +17,7 @@
 		D876E10E2603F6E5007119B8 /* PurchaseIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D876E10D2603F6E5007119B8 /* PurchaseIntegrationTests.swift */; };
 		D876E1262603FB72007119B8 /* ProductRequestFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D876E1252603FB72007119B8 /* ProductRequestFactoryTests.swift */; };
 		D8842F6625D08A76002ADA97 /* PaymentTransactionObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8842F6525D08A76002ADA97 /* PaymentTransactionObserver.swift */; };
+		D89C0EE4260BC5BC006DA773 /* CakeShop.storekit in Resources */ = {isa = PBXBuildFile; fileRef = D89C0EE3260BC5BC006DA773 /* CakeShop.storekit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,6 +44,7 @@
 		D876E10D2603F6E5007119B8 /* PurchaseIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseIntegrationTests.swift; sourceTree = "<group>"; };
 		D876E1252603FB72007119B8 /* ProductRequestFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductRequestFactoryTests.swift; sourceTree = "<group>"; };
 		D8842F6525D08A76002ADA97 /* PaymentTransactionObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentTransactionObserver.swift; sourceTree = "<group>"; };
+		D89C0EE3260BC5BC006DA773 /* CakeShop.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = CakeShop.storekit; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +99,7 @@
 		D8054F8F25C3600C00476E9A /* InAppPurchaseTests */ = {
 			isa = PBXGroup;
 			children = (
+				D89C0EE2260BC59A006DA773 /* Support Files */,
 				D8054F9225C3600C00476E9A /* Info.plist */,
 				D8054FA025C363AB00476E9A /* PaymentTransactionObserverTests.swift */,
 				D849AAAB25F6D30E001DA349 /* ProductLoaderTests.swift */,
@@ -105,6 +108,14 @@
 				D809071626056D72007A047A /* PaymentTransaction+Extension.swift */,
 			);
 			path = InAppPurchaseTests;
+			sourceTree = "<group>";
+		};
+		D89C0EE2260BC59A006DA773 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				D89C0EE3260BC5BC006DA773 /* CakeShop.storekit */,
+			);
+			path = "Support Files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -206,6 +217,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D89C0EE4260BC5BC006DA773 /* CakeShop.storekit in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

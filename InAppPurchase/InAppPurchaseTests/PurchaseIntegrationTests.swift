@@ -17,12 +17,12 @@ private enum Bakery {
 class PurchaseIntegrationTests: XCTestCase {
     
     func testPurchase() throws {
-        let session = try SKTestSession(configurationFileNamed: "TestSession")
+        let session = try SKTestSession(configurationFileNamed: "CakeShop")
         session.resetToDefaultState()
         session.disableDialogs = true
 
-        session.interruptedPurchasesEnabled = true
-        session.clearTransactions()
+//        session.interruptedPurchasesEnabled = true
+//        session.clearTransactions()
 
         let identifier = Bakery.carrotCake
         let expectation = XCTestExpectation(description: "Wait for purchase")
@@ -32,15 +32,21 @@ class PurchaseIntegrationTests: XCTestCase {
 
         purchaseLoader.fetchProducts()
         purchaseLoader.completion = { result in
-            if let product = try? result.get().first {
-
-                purchaseObserver.buy(product)
-                purchaseObserver.completion = { transaction in
-                    
-                    XCTAssertEqual(transaction.identifier, identifier)
-                    expectation.fulfill()
+            switch result {
+            case let .success(fetchedProducts):
+                
+                if let product = fetchedProducts.first {
+                    purchaseObserver.buy(product)
+                    purchaseObserver.completion = { transaction in
+                        
+                        XCTAssertEqual(transaction.identifier, identifier)
+                    }
                 }
+            case let .failure(error):
+                XCTFail("Expected products, got \(error) instead")
             }
+            
+            expectation.fulfill()
         }
         
         wait(for: [expectation], timeout: 0.5)
