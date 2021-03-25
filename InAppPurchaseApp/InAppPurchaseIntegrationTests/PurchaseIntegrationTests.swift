@@ -16,7 +16,7 @@ private enum Bakery {
 
 class PurchaseIntegrationTests: XCTestCase {
     
-    func testPurchase() throws {
+    func testSuccessfullPurchase() throws {
         let session = try SKTestSession(configurationFileNamed: "CakeShop")
         session.resetToDefaultState()
         session.disableDialogs = true
