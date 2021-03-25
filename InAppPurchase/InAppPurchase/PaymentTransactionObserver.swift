@@ -41,6 +41,7 @@ public class PaymentTransactionObserver: NSObject {
     }
     
     private func restored(_ transaction: SKPaymentTransaction) {
+        
         guard let productIdentifier = transaction.original?.payment.productIdentifier else { return }
         
         completion?(.transaction(.restored, productIdentifier))
@@ -49,6 +50,14 @@ public class PaymentTransactionObserver: NSObject {
 }
 
 extension PaymentTransactionObserver: SKPaymentTransactionObserver {
+    
+    public func paymentQueueRestoreCompletedTransactionsFinished(_ queue: SKPaymentQueue) {
+        
+    }
+    
+    public func paymentQueue(_ queue: SKPaymentQueue, restoreCompletedTransactionsFailedWithError error: Error) {
+        
+    }
     
     public func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
         

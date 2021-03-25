@@ -29,6 +29,36 @@
       "productID" : "com.inAppPurchase.chocolate.cake",
       "referenceName" : "Chocolate Cake",
       "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "4.99",
+      "familyShareable" : false,
+      "internalID" : "A0D80B08",
+      "localizations" : [
+        {
+          "description" : "",
+          "displayName" : "",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.inAppPurchase.salted.caramel.cake",
+      "referenceName" : "Salted Caramel Cake",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "4.89",
+      "familyShareable" : false,
+      "internalID" : "E000D8F5",
+      "localizations" : [
+        {
+          "description" : "",
+          "displayName" : "",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.inAppPurchase.red.velvet.cake",
+      "referenceName" : "Red Velvet Cake",
+      "type" : "Consumable"
     }
   ],
   "settings" : {

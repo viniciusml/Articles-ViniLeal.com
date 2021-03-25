@@ -14,7 +14,7 @@ class PurchaseIntegrationTests: XCTestCase {
     func testSuccessfullNonConsumablePurchase() throws {
         try makeSession(withIdentifier: "CakeShop")
         
-        let identifiers = expectedIdentifiers(.carrotCake, .chocolateCake)
+        let identifiers = expectedIdentifiers(.saltedCaramelCake, .redVelvetCake)
         let (observer, loader) = makeSUT(identifiers: identifiers)
         
         let fetchedProducts = fetchProducts(with: loader)
@@ -24,7 +24,7 @@ class PurchaseIntegrationTests: XCTestCase {
     func testInterruptedNonConsumablePurchase() throws {
         let session =  try makeSession(withIdentifier: "CakeShop")
         session.interruptPurchase()
-        let identifiers = expectedIdentifiers(.carrotCake, .chocolateCake)
+        let identifiers = expectedIdentifiers(.saltedCaramelCake, .redVelvetCake)
         let (observer, loader) = makeSUT(identifiers: identifiers)
         
         let fetchedProducts = fetchProducts(with: loader)
@@ -87,8 +87,13 @@ class PurchaseIntegrationTests: XCTestCase {
     }
     
     private enum Bakery: String {
+        // Non-Consumable
         case carrotCake = "com.inAppPurchase.carrot.cake"
         case chocolateCake = "com.inAppPurchase.chocolate.cake"
+        
+        // Consumable
+        case saltedCaramelCake = "com.inAppPurchase.salted.caramel.cake"
+        case redVelvetCake = "com.inAppPurchase.red.velvet.cake"
     }
 }
 
