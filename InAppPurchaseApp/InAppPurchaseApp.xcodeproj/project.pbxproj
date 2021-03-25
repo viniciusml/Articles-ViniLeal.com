@@ -16,6 +16,8 @@
 		D87CDC11260D2F1300DE2597 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D87CDC10260D2F1300DE2597 /* StoreKit.framework */; };
 		D87CDC3A260D2F9D00DE2597 /* CakeShop.storekit in Resources */ = {isa = PBXBuildFile; fileRef = D87CDC39260D2F9D00DE2597 /* CakeShop.storekit */; };
 		D87CDC5C260D301200DE2597 /* PurchaseIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87CDC5B260D301200DE2597 /* PurchaseIntegrationTests.swift */; };
+		D87CDC84260D433300DE2597 /* InAppPurchase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D87CDC83260D433300DE2597 /* InAppPurchase.framework */; };
+		D87CDC85260D433300DE2597 /* InAppPurchase.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D87CDC83260D433300DE2597 /* InAppPurchase.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,6 +44,20 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		D87CDC86260D433300DE2597 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				D87CDC85260D433300DE2597 /* InAppPurchase.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		D87CDBD9260D2EB100DE2597 /* InAppPurchaseApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = InAppPurchaseApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D87CDBDC260D2EB100DE2597 /* InAppPurchaseAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchaseAppApp.swift; sourceTree = "<group>"; };
@@ -60,6 +76,7 @@
 		D87CDC1A260D2F3400DE2597 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D87CDC39260D2F9D00DE2597 /* CakeShop.storekit */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CakeShop.storekit; sourceTree = "<group>"; };
 		D87CDC5B260D301200DE2597 /* PurchaseIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PurchaseIntegrationTests.swift; sourceTree = "<group>"; };
+		D87CDC83260D433300DE2597 /* InAppPurchase.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = InAppPurchase.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +84,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D87CDC84260D433300DE2597 /* InAppPurchase.framework in Frameworks */,
 				D87CDC11260D2F1300DE2597 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -159,6 +177,7 @@
 		D87CDC0F260D2F1300DE2597 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D87CDC83260D433300DE2597 /* InAppPurchase.framework */,
 				D87CDC10260D2F1300DE2597 /* StoreKit.framework */,
 			);
 			name = Frameworks;
@@ -184,6 +203,7 @@
 				D87CDBD5260D2EB100DE2597 /* Sources */,
 				D87CDBD6260D2EB100DE2597 /* Frameworks */,
 				D87CDBD7260D2EB100DE2597 /* Resources */,
+				D87CDC86260D433300DE2597 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);

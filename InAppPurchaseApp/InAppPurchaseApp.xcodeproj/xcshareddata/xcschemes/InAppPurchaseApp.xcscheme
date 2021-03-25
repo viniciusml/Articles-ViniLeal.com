@@ -38,26 +38,6 @@
                ReferencedContainer = "container:InAppPurchaseApp.xcodeproj">
             </BuildableReference>
          </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D87CDBF4260D2EB300DE2597"
-               BuildableName = "InAppPurchaseAppUITests.xctest"
-               BlueprintName = "InAppPurchaseAppUITests"
-               ReferencedContainer = "container:InAppPurchaseApp.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D87CDC15260D2F3400DE2597"
-               BuildableName = "InAppPurchaseIntegrationTests.xctest"
-               BlueprintName = "InAppPurchaseIntegrationTests"
-               ReferencedContainer = "container:InAppPurchaseApp.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
