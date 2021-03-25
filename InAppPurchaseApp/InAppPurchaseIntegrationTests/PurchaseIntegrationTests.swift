@@ -10,17 +10,27 @@ import StoreKitTest
 import XCTest
 
 class PurchaseIntegrationTests: XCTestCase {
+    private var session: SKTestSession!
     
-    func testSuccessfullPurchase() throws {
-        let session = try SKTestSession(configurationFileNamed: "CakeShop")
+    override func setUpWithError() throws {
+        try super.tearDownWithError()
+        
+        session = try SKTestSession(configurationFileNamed: "CakeShop")
         session.resetToDefaultState()
         session.disableDialogs = true
-
-//        session.interruptedPurchasesEnabled = true
-//        session.clearTransactions()
-
+    }
+    
+    override func tearDown() {
+        session.resetToDefaultState()
+        session.disableDialogs = true
+        
+        super.tearDown()
+    }
+    
+    func testSuccessfullNonConsumablePurchase() throws {
         let identifiers = expectedIdentifiers(.carrotCake, .chocolateCake)
-        let expectation = XCTestExpectation(description: "Wait for purchase")
+        let loadingExpectation = expectation(description: "Wait for loading available products")
+        let purchaseExpectation = expectation(description: "Wait for products purchase")
 
         let purchaseObserver = PaymentTransactionObserver()
         let purchaseLoader = ProductLoader(request: ProductRequestFactory.make(with: identifiers))
@@ -35,24 +45,53 @@ class PurchaseIntegrationTests: XCTestCase {
                     purchaseObserver.completion = { transaction in
                         
                         XCTAssertEqual(transaction.identifier, identifiers[0])
-                    }
-                }
-                
-                if let product = fetchedProducts.last {
-                    purchaseObserver.buy(product)
-                    purchaseObserver.completion = { transaction in
-                        
-                        XCTAssertEqual(transaction.identifier, identifiers[1])
+                        XCTAssertEqual(transaction.state, .purchased)
+                        purchaseExpectation.fulfill()
                     }
                 }
             case let .failure(error):
                 XCTFail("Expected products, got \(error) instead")
             }
             
-            expectation.fulfill()
+            loadingExpectation.fulfill()
         }
         
-        wait(for: [expectation], timeout: 0.5)
+        wait(for: [loadingExpectation, purchaseExpectation], timeout: 1.5)
+    }
+    
+    func testInterruptedNonConsumablePurchase() throws {
+        session.interruptedPurchasesEnabled = true
+        session.clearTransactions()
+
+        let identifiers = expectedIdentifiers(.carrotCake, .chocolateCake)
+        let loadingExpectation = expectation(description: "Wait for loading available products")
+        let purchaseExpectation = expectation(description: "Wait for products purchase")
+
+        let purchaseObserver = PaymentTransactionObserver()
+        let purchaseLoader = ProductLoader(request: ProductRequestFactory.make(with: identifiers))
+
+        purchaseLoader.fetchProducts()
+        purchaseLoader.completion = { result in
+            switch result {
+            case let .success(fetchedProducts):
+
+                if let product = fetchedProducts.last {
+                    purchaseObserver.buy(product)
+                    purchaseObserver.completion = { transaction in
+
+                        XCTAssertEqual(transaction.identifier, identifiers[1])
+                        XCTAssertEqual(transaction.state, .failed)
+                        purchaseExpectation.fulfill()
+                    }
+                }
+            case let .failure(error):
+                XCTFail("Expected products, got \(error) instead")
+            }
+
+            loadingExpectation.fulfill()
+        }
+
+        wait(for: [loadingExpectation, purchaseExpectation], timeout: 1.5)
     }
     
     // MARK: - Helpers
