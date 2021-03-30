@@ -27,14 +27,6 @@ class PaymentTransactionObserverTests: XCTestCase {
         XCTAssertEqual(queue.addedProducts, ["a product"])
     }
     
-    func test_restore_restoresCompletedTransactionsToQueue() {
-        let (queue, sut) = makeSUT()
-        
-        sut.restore()
-        
-        XCTAssertEqual(queue.messages, [.restore])
-    }
-    
     func test_updatedTransactions_purchasingOrDeferred_doNotMessageQueue() {
         let (queue, sut) = makeSUT()
         
