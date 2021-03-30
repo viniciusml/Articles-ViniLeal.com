@@ -100,8 +100,28 @@ class PaymentTransactionObserverTests: XCTestCase {
         XCTAssertTrue(queue.messages.isEmpty)
     }
     
-    func test_restore() {
+    func test_restoreWithMultipleTransactions_completesSuccessfully() {
+        PaymentQueueSpy.stubbCompletedTransactions([
+            .restored(originalIdentifier: "1"),
+            .restored(originalIdentifier: "2"),
+            .restored(originalIdentifier: "3")
+        ])
+        let exp = expectation(description: "wait for completion")
+        let (queue, sut) = makeSUT()
         
+        var expectedTransactions: [PaymentTransaction]?
+        sut.onRestoreCompletion = { result in
+            if let transactions = try? result.get() {
+                expectedTransactions = transactions
+            }
+            exp.fulfill()
+        }
+        sut.restore()
+        
+        wait(for: [exp], timeout: 0.1)
+        XCTAssertEqual(queue.messages, [.restore, .finish, .finish, .finish])
+        XCTAssertEqual(expectedTransactions?.map { $0.identifier }, ["1", "2", "3"])
+        XCTAssertEqual(expectedTransactions?.map { $0.state }, [.restored, .restored, .restored])
     }
     
     // MARK: Helpers
@@ -141,6 +161,11 @@ class PaymentTransactionObserverTests: XCTestCase {
         
         private(set) var messages = [Message]()
         private(set) var addedProducts = [String]()
+        private(set) static var completedTransactions = [SKPaymentTransaction]()
+        
+        static func stubbCompletedTransactions(_ transactions: [SKPaymentTransaction]) {
+            completedTransactions.append(contentsOf: transactions)
+        }
  
         override func add(_ payment: SKPayment) {
             messages.append(.add)
@@ -149,6 +174,9 @@ class PaymentTransactionObserverTests: XCTestCase {
         
         override func restoreCompletedTransactions() {
             messages.append(.restore)
+            
+            transactionObservers.first?.paymentQueue(self, updatedTransactions: PaymentQueueSpy.completedTransactions)
+            transactionObservers.first?.paymentQueueRestoreCompletedTransactionsFinished?(self)
         }
         
         override func finishTransaction(_ transaction: SKPaymentTransaction) {

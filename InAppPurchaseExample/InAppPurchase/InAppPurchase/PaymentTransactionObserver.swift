@@ -10,9 +10,9 @@ import StoreKit
 public class PaymentTransactionObserver: NSObject {
     
     private let queue: SKPaymentQueue
+    private var restoredTransactions = [PaymentTransaction]()
     public var completion: ((PaymentTransaction) -> Void)?
-    
-    public var tempCallback: (() -> Void)?
+    public var onRestoreCompletion: ((Result<[PaymentTransaction], Error>) -> Void)?
     
     public init(queue: SKPaymentQueue = .default()) {
         self.queue = queue
@@ -45,20 +45,20 @@ public class PaymentTransactionObserver: NSObject {
     private func restored(_ transaction: SKPaymentTransaction) {
         guard let productIdentifier = transaction.original?.payment.productIdentifier else { return }
         
-        completion?(.transaction(.restored, productIdentifier))
+        restoredTransactions.append(.transaction(.restored, productIdentifier))
         queue.finishTransaction(transaction)
     }
 }
 
 extension PaymentTransactionObserver: SKPaymentTransactionObserver {
     
-    // TODO?
     public func paymentQueueRestoreCompletedTransactionsFinished(_ queue: SKPaymentQueue) {
-        tempCallback?()
+        onRestoreCompletion?(.success(restoredTransactions))
+        restoredTransactions = [] // Test this
     }
     
     public func paymentQueue(_ queue: SKPaymentQueue, restoreCompletedTransactionsFailedWithError error: Error) {
-        tempCallback?()
+        onRestoreCompletion?(.failure(error)) // Test this
     }
     
     public func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
