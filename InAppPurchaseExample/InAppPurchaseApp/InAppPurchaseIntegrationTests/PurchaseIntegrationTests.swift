@@ -11,7 +11,7 @@ import XCTest
 
 class PurchaseIntegrationTests: XCTestCase {
     
-    func testSuccessfullNonConsumablePurchase() throws {
+    func test_successfullNonConsumablePurchase() throws {
         try makeSession(withIdentifier: "CakeShop")
         
         let identifiers = expectedIdentifiers(.saltedCaramelCake, .redVelvetCake)
@@ -21,7 +21,7 @@ class PurchaseIntegrationTests: XCTestCase {
         try expectPurchased(fetchedProducts.first, with: observer, toHaveIdentifier: identifiers[0], andState: .purchased)
     }
     
-    func testInterruptedNonConsumablePurchase() throws {
+    func test_interruptedNonConsumablePurchase() throws {
         let session =  try makeSession(withIdentifier: "CakeShop")
         session.interruptPurchase()
         let identifiers = expectedIdentifiers(.saltedCaramelCake, .redVelvetCake)

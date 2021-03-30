@@ -12,6 +12,8 @@ public class PaymentTransactionObserver: NSObject {
     private let queue: SKPaymentQueue
     public var completion: ((PaymentTransaction) -> Void)?
     
+    public var tempCallback: (() -> Void)?
+    
     public init(queue: SKPaymentQueue = .default()) {
         self.queue = queue
         super.init()
@@ -52,11 +54,11 @@ extension PaymentTransactionObserver: SKPaymentTransactionObserver {
     
     // TODO?
     public func paymentQueueRestoreCompletedTransactionsFinished(_ queue: SKPaymentQueue) {
-        
+        tempCallback?()
     }
     
     public func paymentQueue(_ queue: SKPaymentQueue, restoreCompletedTransactionsFailedWithError error: Error) {
-        
+        tempCallback?()
     }
     
     public func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {

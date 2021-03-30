@@ -100,7 +100,9 @@ class PaymentTransactionObserverTests: XCTestCase {
         XCTAssertTrue(queue.messages.isEmpty)
     }
     
-    // TODO: Restore
+    func test_restore() {
+        
+    }
     
     // MARK: Helpers
     
