@@ -11,8 +11,7 @@ public class PaymentTransactionObserver: NSObject {
     
     private let queue: SKPaymentQueue
     private var restoredTransactions = [PaymentTransaction]()
-    public var completion: ((PaymentTransaction) -> Void)?
-    public var onRestoreCompletion: ((Result<[PaymentTransaction], Error>) -> Void)?
+    public var onTransactionsUpdate: ((Result<[PaymentTransaction], Error>) -> Void)?
     
     public init(queue: SKPaymentQueue = .default()) {
         self.queue = queue
@@ -31,14 +30,14 @@ public class PaymentTransactionObserver: NSObject {
     }
     
     private func purchased(_ transaction: SKPaymentTransaction) {
-        completion?(.transaction(.purchased, transaction.payment.productIdentifier))
+        onTransactionsUpdate?(.success([.transaction(.purchased, transaction.payment.productIdentifier)]))
         queue.finishTransaction(transaction)
     }
     
     private func failed(_ transaction: SKPaymentTransaction) {
         guard transaction.paymentWasNotCancelled else { return }
         
-        completion?(.transaction(.failed, transaction.payment.productIdentifier))
+        onTransactionsUpdate?(.success([.transaction(.failed, transaction.payment.productIdentifier)]))
         queue.finishTransaction(transaction)
     }
     
@@ -53,12 +52,12 @@ public class PaymentTransactionObserver: NSObject {
 extension PaymentTransactionObserver: SKPaymentTransactionObserver {
     
     public func paymentQueueRestoreCompletedTransactionsFinished(_ queue: SKPaymentQueue) {
-        onRestoreCompletion?(.success(restoredTransactions))
+        onTransactionsUpdate?(.success(restoredTransactions))
         restoredTransactions = [] // Test this
     }
     
     public func paymentQueue(_ queue: SKPaymentQueue, restoreCompletedTransactionsFailedWithError error: Error) {
-        onRestoreCompletion?(.failure(error)) // Test this
+        onTransactionsUpdate?(.failure(error)) // Test this
     }
     
     public func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {

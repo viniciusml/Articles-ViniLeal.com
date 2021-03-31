@@ -33,7 +33,7 @@ class PaymentTransactionObserverTests: XCTestCase {
         sut.paymentQueue(queue, updatedTransactions: [.purchasing, .deferred])
         
         XCTAssertTrue(queue.messages.isEmpty)
-        XCTAssertNil(sut.completion)
+        XCTAssertNil(sut.onTransactionsUpdate)
     }
     
     func test_updatedTransactions_purchased_messagesQueue() {
@@ -92,7 +92,7 @@ class PaymentTransactionObserverTests: XCTestCase {
         let (queue, sut) = makeSUT()
         
         var expectedTransactions: [PaymentTransaction]?
-        sut.onRestoreCompletion = { result in
+        sut.onTransactionsUpdate = { result in
             if let transactions = try? result.get() {
                 expectedTransactions = transactions
             }
@@ -118,19 +118,21 @@ class PaymentTransactionObserverTests: XCTestCase {
         let exp = expectation(description: "wait for completion")
         var receivedTransaction: PaymentTransaction?
         
-        sut.completion = {
-            receivedTransaction = $0
+        sut.onTransactionsUpdate = { result in
+            if let transactions = try? result.get() {
+                receivedTransaction = transactions.first
+            }
             exp.fulfill()
-            XCTAssertEqual(receivedTransaction, expectedTransaction)
         }
         action()
         
         wait(for: [exp], timeout: 0.1)
+        XCTAssertEqual(receivedTransaction, expectedTransaction)
     }
     
     private func expect(_ sut: PaymentTransactionObserver, toNotCompleteWhen action: () -> Void, file: StaticString = #filePath, line: UInt = #line) {
         
-        sut.completion = {
+        sut.onTransactionsUpdate = {
             XCTFail("SUT should not complete, completed with: \($0) instead", file: file, line: line)
         }
         action()
