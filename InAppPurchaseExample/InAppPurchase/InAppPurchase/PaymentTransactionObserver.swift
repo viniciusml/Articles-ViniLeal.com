@@ -31,14 +31,14 @@ public class PaymentTransactionObserver: NSObject {
     }
     
     private func purchased(_ transaction: SKPaymentTransaction) {
-        onTransactionsUpdate?(.success([.transaction(.purchased, transaction.payment.productIdentifier)]))
+        completeWith(.transaction(.purchased, transaction.payment.productIdentifier))
         queue.finishTransaction(transaction)
     }
     
     private func failed(_ transaction: SKPaymentTransaction) {
         guard transaction.paymentWasNotCancelled else { return }
         
-        onTransactionsUpdate?(.success([.transaction(.failed, transaction.payment.productIdentifier)]))
+        completeWith(.transaction(.failed, transaction.payment.productIdentifier))
         queue.finishTransaction(transaction)
     }
     
@@ -48,15 +48,27 @@ public class PaymentTransactionObserver: NSObject {
         restoredTransactions.append(.transaction(.restored, productIdentifier))
         queue.finishTransaction(transaction)
     }
+    
+    private func completeWith(_ transactions: PaymentTransaction...) {
+        completeWith(transactions)
+    }
+    
+    private func completeWith(_ transactions: [PaymentTransaction]) {
+        onTransactionsUpdate?(.success(transactions))
+    }
+    
+    private func completeWith(_ error: Error) {
+        onTransactionsUpdate?(.failure(error))
+    }
 }
 
 extension PaymentTransactionObserver: SKPaymentTransactionObserver {
     
     public func paymentQueueRestoreCompletedTransactionsFinished(_ queue: SKPaymentQueue) {
         if !restoredTransactions.isEmpty {
-            onTransactionsUpdate?(.success(restoredTransactions))
+            completeWith(restoredTransactions)
         }
-        restoredTransactions = [] // Test this
+        restoredTransactions = []
     }
     
     public func paymentQueue(_ queue: SKPaymentQueue, restoreCompletedTransactionsFailedWithError error: Error) {
