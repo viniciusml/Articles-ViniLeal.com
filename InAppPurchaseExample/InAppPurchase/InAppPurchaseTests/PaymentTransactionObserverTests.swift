@@ -106,6 +106,19 @@ class PaymentTransactionObserverTests: XCTestCase {
         XCTAssertEqual(queue.messages, [.restore, .finish, .finish, .finish])
     }
     
+    func test_restore_twiceWithDifferentValues_completesWithSuccess() {
+        let transactions = makeRestoredTransactions("1", "2", "3")
+        PaymentQueueSpy.stubbCompletedTransactions(transactions.sk)
+        let (_, sut) = makeSUT()
+        
+        expect(sut, toCompleteWith: .success(transactions.domain), when: sut.restore)
+        
+        let newTransactions = makeRestoredTransactions("4", "5", "6")
+        PaymentQueueSpy.stubbCompletedTransactions(newTransactions.sk)
+        
+        expect(sut, toCompleteWith: .success(newTransactions.domain), when: sut.restore)
+    }
+    
     func test_restore_withError_completesWithFailure() {
         let error = NSError(domain: "test error", code: 0)
         PaymentQueueSpy.stubbError(error)
@@ -187,7 +200,7 @@ class PaymentTransactionObserverTests: XCTestCase {
         private(set) static var completionError: Error?
         
         static func stubbCompletedTransactions(_ transactions: [SKPaymentTransaction]) {
-            completedTransactions.append(contentsOf: transactions)
+            completedTransactions = transactions
         }
         
         static func stubbError(_ error: Error) {
