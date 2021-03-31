@@ -11,6 +11,11 @@ import XCTest
 
 class PaymentTransactionObserverTests: XCTestCase {
     
+    override func tearDown() {
+        PaymentQueueSpy.resetState()
+        super.tearDown()
+    }
+    
     func test_init_addsObserverToQueue() {
         let (queue, sut) = makeSUT()
         
@@ -115,6 +120,28 @@ class PaymentTransactionObserverTests: XCTestCase {
         XCTAssertEqual(expectedTransactions?.map { $0.state }, [.restored, .restored, .restored])
     }
     
+    func test_restore_withError_completesWithFailure() {
+        let expectedError = NSError(domain: "test error", code: 0)
+        PaymentQueueSpy.stubbError(expectedError)
+        let exp = expectation(description: "wait for completion")
+        let (_, sut) = makeSUT()
+        
+        var receivedError: NSError?
+        sut.onTransactionsUpdate = { result in
+            switch result {
+            case let .success(receivedTransactions):
+                XCTFail("expected failure, got \(receivedTransactions) instead")
+            case let .failure(error):
+                receivedError = error as NSError
+            }
+            exp.fulfill()
+        }
+        sut.restore()
+        
+        wait(for: [exp], timeout: 0.1)
+        XCTAssertEqual(expectedError, receivedError)
+    }
+    
     // MARK: Helpers
     
     private func makeSUT() -> (PaymentQueueSpy, PaymentTransactionObserver) {
@@ -159,9 +186,19 @@ class PaymentTransactionObserverTests: XCTestCase {
         private(set) var messages = [Message]()
         private(set) var addedProducts = [String]()
         private(set) static var completedTransactions = [SKPaymentTransaction]()
+        private(set) static var completionError: Error?
         
         static func stubbCompletedTransactions(_ transactions: [SKPaymentTransaction]) {
             completedTransactions.append(contentsOf: transactions)
+        }
+        
+        static func stubbError(_ error: Error) {
+            completionError = error
+        }
+        
+        static func resetState() {
+            completedTransactions = []
+            completionError = nil
         }
  
         override func add(_ payment: SKPayment) {
@@ -173,7 +210,12 @@ class PaymentTransactionObserverTests: XCTestCase {
             messages.append(.restore)
             
             transactionObservers.first?.paymentQueue(self, updatedTransactions: PaymentQueueSpy.completedTransactions)
-            transactionObservers.first?.paymentQueueRestoreCompletedTransactionsFinished?(self)
+            
+            if let error = PaymentQueueSpy.completionError {
+                transactionObservers.first?.paymentQueue?(self, restoreCompletedTransactionsFailedWithError: error)
+            } else {
+                transactionObservers.first?.paymentQueueRestoreCompletedTransactionsFinished?(self)
+            }
         }
         
         override func finishTransaction(_ transaction: SKPaymentTransaction) {

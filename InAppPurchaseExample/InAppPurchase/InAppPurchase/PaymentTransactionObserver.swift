@@ -59,7 +59,7 @@ extension PaymentTransactionObserver: SKPaymentTransactionObserver {
     }
     
     public func paymentQueue(_ queue: SKPaymentQueue, restoreCompletedTransactionsFailedWithError error: Error) {
-        onTransactionsUpdate?(.failure(error)) // Test this
+        onTransactionsUpdate?(.failure(error))
     }
     
     public func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
