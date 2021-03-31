@@ -71,18 +71,27 @@ class PaymentTransactionObserverTests: XCTestCase {
         XCTAssertTrue(queue.messages.isEmpty)
     }
     
-    // change this test to use recently created `onRestoreCompletion`
-    func test_updatedTransactions_restoredWithoutOriginal_doesNotMessageQueue() {
-        let (queue, sut) = makeSUT()
+    func test_restore_doesNotCompleteWithNoTransactions() {
+        PaymentQueueSpy.stubbCompletedTransactions([
+            .restored(originalIdentifier: nil)
+        ])
+        let (_, sut) = makeSUT()
         
-        expect(sut, toNotCompleteWhen: {
-            sut.paymentQueue(queue, updatedTransactions: [.restored(originalIdentifier: nil)])
-        })
-        
-        XCTAssertTrue(queue.messages.isEmpty)
+        expect(sut, toNotCompleteWhen: sut.restore)
     }
     
-    func test_restoreWithMultipleTransactions_completesSuccessfully() {
+    func test_restore_withoutOriginalIdentifier_doesNotMessageQueue() {
+        PaymentQueueSpy.stubbCompletedTransactions([
+            .restored(originalIdentifier: nil)
+        ])
+        let (queue, sut) = makeSUT()
+        
+        sut.restore()
+        
+        XCTAssertEqual(queue.messages, [.restore])
+    }
+    
+    func test_restore_withMultipleTransactions_completesWithSuccess() {
         PaymentQueueSpy.stubbCompletedTransactions([
             .restored(originalIdentifier: "1"),
             .restored(originalIdentifier: "2"),
@@ -131,11 +140,15 @@ class PaymentTransactionObserverTests: XCTestCase {
     }
     
     private func expect(_ sut: PaymentTransactionObserver, toNotCompleteWhen action: () -> Void, file: StaticString = #filePath, line: UInt = #line) {
+        let exp = expectation(description: "wait for completion")
+        exp.isInverted = true
         
-        sut.onTransactionsUpdate = {
-            XCTFail("SUT should not complete, completed with: \($0) instead", file: file, line: line)
+        sut.onTransactionsUpdate = { _ in
+            exp.fulfill()
         }
         action()
+        
+        wait(for: [exp], timeout: 0.1)
     }
     
     private class PaymentQueueSpy: SKPaymentQueue {

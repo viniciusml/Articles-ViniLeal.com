@@ -52,7 +52,9 @@ public class PaymentTransactionObserver: NSObject {
 extension PaymentTransactionObserver: SKPaymentTransactionObserver {
     
     public func paymentQueueRestoreCompletedTransactionsFinished(_ queue: SKPaymentQueue) {
-        onTransactionsUpdate?(.success(restoredTransactions))
+        if !restoredTransactions.isEmpty {
+            onTransactionsUpdate?(.success(restoredTransactions))
+        }
         restoredTransactions = [] // Test this
     }
     
