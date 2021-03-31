@@ -8,10 +8,11 @@
 import StoreKit
 
 public class PaymentTransactionObserver: NSObject {
+    public typealias TransactionResult = Result<[PaymentTransaction], Error>
     
     private let queue: SKPaymentQueue
     private var restoredTransactions = [PaymentTransaction]()
-    public var onTransactionsUpdate: ((Result<[PaymentTransaction], Error>) -> Void)?
+    public var onTransactionsUpdate: ((TransactionResult) -> Void)?
     
     public init(queue: SKPaymentQueue = .default()) {
         self.queue = queue

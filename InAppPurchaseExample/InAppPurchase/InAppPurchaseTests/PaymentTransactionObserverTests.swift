@@ -97,49 +97,21 @@ class PaymentTransactionObserverTests: XCTestCase {
     }
     
     func test_restore_withMultipleTransactions_completesWithSuccess() {
-        PaymentQueueSpy.stubbCompletedTransactions([
-            .restored(originalIdentifier: "1"),
-            .restored(originalIdentifier: "2"),
-            .restored(originalIdentifier: "3")
-        ])
-        let exp = expectation(description: "wait for completion")
+        let transactions = makeRestoredTransactions("1", "2", "3")
+        PaymentQueueSpy.stubbCompletedTransactions(transactions.sk)
         let (queue, sut) = makeSUT()
         
-        var expectedTransactions: [PaymentTransaction]?
-        sut.onTransactionsUpdate = { result in
-            if let transactions = try? result.get() {
-                expectedTransactions = transactions
-            }
-            exp.fulfill()
-        }
-        sut.restore()
+        expect(sut, toCompleteWith: .success(transactions.domain), when: sut.restore)
         
-        wait(for: [exp], timeout: 0.1)
         XCTAssertEqual(queue.messages, [.restore, .finish, .finish, .finish])
-        XCTAssertEqual(expectedTransactions?.map { $0.identifier }, ["1", "2", "3"])
-        XCTAssertEqual(expectedTransactions?.map { $0.state }, [.restored, .restored, .restored])
     }
     
     func test_restore_withError_completesWithFailure() {
-        let expectedError = NSError(domain: "test error", code: 0)
-        PaymentQueueSpy.stubbError(expectedError)
-        let exp = expectation(description: "wait for completion")
+        let error = NSError(domain: "test error", code: 0)
+        PaymentQueueSpy.stubbError(error)
         let (_, sut) = makeSUT()
         
-        var receivedError: NSError?
-        sut.onTransactionsUpdate = { result in
-            switch result {
-            case let .success(receivedTransactions):
-                XCTFail("expected failure, got \(receivedTransactions) instead")
-            case let .failure(error):
-                receivedError = error as NSError
-            }
-            exp.fulfill()
-        }
-        sut.restore()
-        
-        wait(for: [exp], timeout: 0.1)
-        XCTAssertEqual(expectedError, receivedError)
+        expect(sut, toCompleteWith: .failure(error), when: sut.restore)
     }
     
     // MARK: Helpers
@@ -148,6 +120,12 @@ class PaymentTransactionObserverTests: XCTestCase {
         let queue = PaymentQueueSpy()
         let sut = PaymentTransactionObserver(queue: queue)
         return (queue, sut)
+    }
+    
+    private func makeRestoredTransactions(_ identifiers: String?...) -> (sk: [SKPaymentTransaction], domain: [PaymentTransaction]) {
+        let skTransactions = identifiers.map { SKPaymentTransaction.restored(originalIdentifier: $0) }
+        let domainTransactions = identifiers.map { PaymentTransaction.make(.restored, with: $0 ?? "") }
+        return (skTransactions, domainTransactions)
     }
     
     private func expect(_ sut: PaymentTransactionObserver, toCompleteWith expectedTransaction: PaymentTransaction, when action: () -> Void, file: StaticString = #filePath, line: UInt = #line) {
@@ -164,6 +142,26 @@ class PaymentTransactionObserverTests: XCTestCase {
         
         wait(for: [exp], timeout: 0.1)
         XCTAssertEqual(receivedTransaction, expectedTransaction)
+    }
+    
+    private func expect(_ sut: PaymentTransactionObserver, toCompleteWith expectedResult: PaymentTransactionObserver.TransactionResult, when action: () -> Void, file: StaticString = #filePath, line: UInt = #line) {
+        let exp = expectation(description: "wait for completion")
+        
+        sut.onTransactionsUpdate = { receivedResult in
+            switch (receivedResult, expectedResult) {
+            case (.success(let receivedTransactions), .success(let expectedTransactions)):
+                XCTAssertEqual(receivedTransactions, expectedTransactions, file: file, line: line)
+            case (.failure(let receivedError as NSError), .failure(let expectedError as NSError)):
+                XCTAssertEqual(receivedError, expectedError, file: file, line: line)
+            default:
+                XCTFail("Expected \(expectedResult), got \(receivedResult) instead", file: file, line: line)
+            }
+            exp.fulfill()
+        }
+        action()
+        
+        wait(for: [exp], timeout: 0.1)
+        
     }
     
     private func expect(_ sut: PaymentTransactionObserver, toNotCompleteWhen action: () -> Void, file: StaticString = #filePath, line: UInt = #line) {
