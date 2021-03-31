@@ -12,7 +12,6 @@
 		D87CDBE1260D2EB200DE2597 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D87CDBE0260D2EB200DE2597 /* Assets.xcassets */; };
 		D87CDBE4260D2EB200DE2597 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D87CDBE3260D2EB200DE2597 /* Preview Assets.xcassets */; };
 		D87CDBEF260D2EB200DE2597 /* InAppPurchaseAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87CDBEE260D2EB200DE2597 /* InAppPurchaseAppTests.swift */; };
-		D87CDBFA260D2EB300DE2597 /* InAppPurchaseAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87CDBF9260D2EB300DE2597 /* InAppPurchaseAppUITests.swift */; };
 		D87CDC11260D2F1300DE2597 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D87CDC10260D2F1300DE2597 /* StoreKit.framework */; };
 		D87CDC3A260D2F9D00DE2597 /* CakeShop.storekit in Resources */ = {isa = PBXBuildFile; fileRef = D87CDC39260D2F9D00DE2597 /* CakeShop.storekit */; };
 		D87CDC5C260D301200DE2597 /* PurchaseIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87CDC5B260D301200DE2597 /* PurchaseIntegrationTests.swift */; };
@@ -69,8 +68,6 @@
 		D87CDBEE260D2EB200DE2597 /* InAppPurchaseAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchaseAppTests.swift; sourceTree = "<group>"; };
 		D87CDBF0260D2EB200DE2597 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D87CDBF5260D2EB300DE2597 /* InAppPurchaseAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InAppPurchaseAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		D87CDBF9260D2EB300DE2597 /* InAppPurchaseAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchaseAppUITests.swift; sourceTree = "<group>"; };
-		D87CDBFB260D2EB300DE2597 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D87CDC10260D2F1300DE2597 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		D87CDC16260D2F3400DE2597 /* InAppPurchaseIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InAppPurchaseIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D87CDC1A260D2F3400DE2597 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -118,7 +115,6 @@
 			children = (
 				D87CDBDB260D2EB100DE2597 /* InAppPurchaseApp */,
 				D87CDBED260D2EB200DE2597 /* InAppPurchaseAppTests */,
-				D87CDBF8260D2EB300DE2597 /* InAppPurchaseAppUITests */,
 				D87CDC17260D2F3400DE2597 /* InAppPurchaseIntegrationTests */,
 				D87CDBDA260D2EB100DE2597 /* Products */,
 				D87CDC0F260D2F1300DE2597 /* Frameworks */,
@@ -163,15 +159,6 @@
 				D87CDBF0260D2EB200DE2597 /* Info.plist */,
 			);
 			path = InAppPurchaseAppTests;
-			sourceTree = "<group>";
-		};
-		D87CDBF8260D2EB300DE2597 /* InAppPurchaseAppUITests */ = {
-			isa = PBXGroup;
-			children = (
-				D87CDBF9260D2EB300DE2597 /* InAppPurchaseAppUITests.swift */,
-				D87CDBFB260D2EB300DE2597 /* Info.plist */,
-			);
-			path = InAppPurchaseAppUITests;
 			sourceTree = "<group>";
 		};
 		D87CDC0F260D2F1300DE2597 /* Frameworks */ = {
@@ -372,7 +359,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D87CDBFA260D2EB300DE2597 /* InAppPurchaseAppUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
