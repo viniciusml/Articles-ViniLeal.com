@@ -72,10 +72,11 @@ class PurchaseIntegrationTests: XCTestCase {
         let product = try XCTUnwrap(product, "Could not unwrap product", file: file, line: line)
         
         observer.buy(product)
-        observer.completion = { transaction in
-            
-            XCTAssertEqual(transaction.identifier, identifier)
-            XCTAssertEqual(transaction.state, state)
+        observer.onTransactionsUpdate = { result in
+            if let transaction = try? result.get().first {
+                XCTAssertEqual(transaction.identifier, identifier)
+                XCTAssertEqual(transaction.state, state)
+            }
             exp.fulfill()
         }
         
