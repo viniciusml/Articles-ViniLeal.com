@@ -1,27 +1,11 @@
 //
-//  ContentView.swift
+//  ProductsView.swift
 //  InAppPurchaseApp
 //
-//  Created by Vinicius Moreira Leal on 25/03/2021.
+//  Created by Vinicius Moreira Leal on 07/04/2021.
 //
 
 import SwiftUI
-
-struct ContentView: View {
-    var body: some View {
-        ProductsView()
-    }
-}
-
-struct Product: Identifiable {
-    let id: Int
-    let title: String
-    let price: String
-}
-
-struct ViewModel {
-    let products: [Product]
-}
 
 struct ProductsView: View {
     let viewModel: ViewModel = ViewModel(products: [Product(id: 0, title: "A product", price: "3,99"), Product(id: 2, title: "Another product", price: "Not available")])
@@ -59,37 +43,5 @@ struct ProductsView: View {
             .ignoresSafeArea(.all, edges: .bottom)
             .padding(.top, 40)
         }
-    }
-}
-
-struct ProductRow: View {
-    let title: String
-    let price: String
-    let onBuyTap: () -> Void
-    
-    var body: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 2) {
-                Text("\(title)")
-                Text(price)
-                    .font(.subheadline)
-            }
-            .padding(.leading, 20)
-            
-            Spacer()
-            
-            Button("Buy", action: onBuyTap)
-                .foregroundColor(.blue)
-                .padding(.trailing, 20)
-        }
-        .frame(height: 90)
-    }
-}
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        Color.green
-            .ignoresSafeArea(.all)
-            .overlay(ContentView())
     }
 }
