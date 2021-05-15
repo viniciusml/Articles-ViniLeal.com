@@ -11,5 +11,4 @@ struct Product: Identifiable {
     let id: Int
     let title: String
     let price: String
-    let isAvailable: Bool
 }

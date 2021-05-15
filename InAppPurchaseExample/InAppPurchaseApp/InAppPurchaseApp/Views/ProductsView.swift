@@ -8,9 +8,7 @@
 import SwiftUI
 
 struct ProductsView: View {
-    let viewModel: ViewModel = ViewModel(products: [Product(id: 0, title: "A product", price: "3,99", isAvailable: true), Product(id: 2, title: "Another product", price: "Not available", isAvailable: false)])
-    let onRestoreTap: () -> Void = {}
-    let onBuyTap: () -> Void = {}
+    let container: ProductViewContainer
     
     var body: some View {
         VStack {
@@ -22,7 +20,7 @@ struct ProductsView: View {
             VStack(spacing: 20) {
                 HStack {
                     Spacer()
-                    Button(action: onRestoreTap, label: {
+                    Button(action: container.onRestoreTap, label: {
                         Text("Restore")
                             .foregroundColor(.black)
                             .font(.body)
@@ -30,8 +28,8 @@ struct ProductsView: View {
                             .padding([.top, .trailing], 20)
                     })
                 }
-                ForEach(viewModel.products) { product in
-                    ProductRow(title: product.title, price: product.price, isAvailable: product.isAvailable, onBuyTap: onBuyTap)
+                ForEach(container.observer.products) { product in
+                    ProductRow(title: product.title, price: product.price, onBuyTap: container.onBuyTap)
                         .cornerRadius(12)
                         .background(Color.white.shadow(color: Color.black.opacity(0.15), radius: 3))
                         .padding(.horizontal, 12)
