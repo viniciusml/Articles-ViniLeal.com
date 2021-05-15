@@ -7,6 +7,11 @@
 
 import Foundation
 
-struct ViewModel {
-    let products: [Product]
+class ViewModel: ObservableObject {
+
+    private(set) var products: [Product]
+    
+    init(products: [Product]) {
+        self.products = products
+    }
 }

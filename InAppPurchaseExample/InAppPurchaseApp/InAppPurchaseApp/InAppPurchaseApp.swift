@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct InAppPurchaseAppApp: App {
+struct InAppPurchaseApp: App {
     var body: some Scene {
         WindowGroup {
             Color.green

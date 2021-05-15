@@ -10,6 +10,7 @@ import SwiftUI
 struct ProductRow: View {
     let title: String
     let price: String
+    let isAvailable: Bool
     let onBuyTap: () -> Void
     
     var body: some View {
@@ -24,8 +25,10 @@ struct ProductRow: View {
             Spacer()
             
             Button("Buy", action: onBuyTap)
-                .foregroundColor(.blue)
+                .foregroundColor(.green)
+                .opacity(isAvailable ? 1.0 : 0.6)
                 .padding(.trailing, 20)
+                .disabled(!isAvailable)
         }
         .frame(height: 90)
     }

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ProductsView: View {
-    let viewModel: ViewModel = ViewModel(products: [Product(id: 0, title: "A product", price: "3,99"), Product(id: 2, title: "Another product", price: "Not available")])
+    let viewModel: ViewModel = ViewModel(products: [Product(id: 0, title: "A product", price: "3,99", isAvailable: true), Product(id: 2, title: "Another product", price: "Not available", isAvailable: false)])
     let onRestoreTap: () -> Void = {}
     let onBuyTap: () -> Void = {}
     
@@ -31,7 +31,7 @@ struct ProductsView: View {
                     })
                 }
                 ForEach(viewModel.products) { product in
-                    ProductRow(title: product.title, price: product.price, onBuyTap: onBuyTap)
+                    ProductRow(title: product.title, price: product.price, isAvailable: product.isAvailable, onBuyTap: onBuyTap)
                         .cornerRadius(12)
                         .background(Color.white.shadow(color: Color.black.opacity(0.15), radius: 3))
                         .padding(.horizontal, 12)
