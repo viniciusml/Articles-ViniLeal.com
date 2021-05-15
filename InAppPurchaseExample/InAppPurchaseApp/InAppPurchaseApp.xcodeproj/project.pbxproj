@@ -153,13 +153,13 @@
 		D87CDBDB260D2EB100DE2597 /* InAppPurchaseApp */ = {
 			isa = PBXGroup;
 			children = (
+				D889639126506F7F0051E359 /* ViewModel */,
+				D889639026506F6B0051E359 /* Model */,
+				D889638F26506F600051E359 /* Main */,
 				D8317BB0261E5DA0009F38B7 /* Views */,
-				D87CDBDC260D2EB100DE2597 /* InAppPurchaseApp.swift */,
 				D87CDBE0260D2EB200DE2597 /* Assets.xcassets */,
 				D87CDBE5260D2EB200DE2597 /* Info.plist */,
 				D87CDBE2260D2EB200DE2597 /* Preview Content */,
-				D8317B9C261E5D38009F38B7 /* ViewModel.swift */,
-				D8317BA1261E5D52009F38B7 /* Product.swift */,
 			);
 			path = InAppPurchaseApp;
 			sourceTree = "<group>";
@@ -198,6 +198,30 @@
 				D87CDC1A260D2F3400DE2597 /* Info.plist */,
 			);
 			path = InAppPurchaseIntegrationTests;
+			sourceTree = "<group>";
+		};
+		D889638F26506F600051E359 /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				D87CDBDC260D2EB100DE2597 /* InAppPurchaseApp.swift */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
+		D889639026506F6B0051E359 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				D8317BA1261E5D52009F38B7 /* Product.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		D889639126506F7F0051E359 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				D8317B9C261E5D38009F38B7 /* ViewModel.swift */,
+			);
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
