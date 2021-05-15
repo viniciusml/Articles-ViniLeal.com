@@ -15,7 +15,7 @@ class PurchaseObserver: ObservableObject {
         viewModel.products
     }
     
-    init(viewModel: ViewModel) {
+    init(viewModel: ViewModel = ViewModel(products: [])) {
         self.viewModel = viewModel
     }
     

@@ -8,7 +8,7 @@
 import Foundation
 
 struct Product: Identifiable {
-    let id: Int
+    let id: String
     let title: String
     let price: String
 }

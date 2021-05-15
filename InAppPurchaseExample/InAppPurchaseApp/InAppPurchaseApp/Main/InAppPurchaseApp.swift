@@ -12,7 +12,7 @@ import SwiftUI
 struct InAppPurchaseApp: App {
     
     let productLoader = ProductLoader(request: ProductRequestFactory.make(with: []))
-    let observer = PurchaseObserver(viewModel: ViewModel(products: []))
+    let observer = PurchaseObserver()
     
     var body: some Scene {
         WindowGroup {
@@ -26,7 +26,9 @@ struct InAppPurchaseApp: App {
         productLoader.fetchProducts()
         productLoader.completion = { result in
             if let products = try? result.get() {
-                observer.setViewModel(ViewModel(products: products.map { Product(id: 0, title: $0.localizedTitle, price: $0.price.stringValue) }))
+                observer.setViewModel(
+                    ViewModel(products: products.map { Product(id: $0.productIdentifier, title: $0.localizedTitle, price: $0.price.stringValue) })
+                )
             }
         }
     }
