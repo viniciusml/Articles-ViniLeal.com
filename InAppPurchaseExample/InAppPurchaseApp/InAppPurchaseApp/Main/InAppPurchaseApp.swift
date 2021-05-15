@@ -11,7 +11,7 @@ import SwiftUI
 @main
 struct InAppPurchaseApp: App {
     
-    let productLoader = ProductLoader(request: ProductRequestFactory.make(with: []))
+    let productLoader = ProductLoader(request: ProductRequestFactory.make(with: IDLoader.ids))
     let observer = PurchaseObserver()
     
     var body: some Scene {
@@ -30,6 +30,22 @@ struct InAppPurchaseApp: App {
                     ViewModel(products: products.map { Product(id: $0.productIdentifier, title: $0.localizedTitle, price: $0.price.stringValue) })
                 )
             }
+        }
+    }
+}
+
+struct IDLoader {
+    static var ids: [String] {
+        guard let url = Bundle.main.url(forResource: "product_ids", withExtension: "plist") else {
+            fatalError("Unable to resolve url for in the bundle.")
+        }
+        do {
+            let data = try Data(contentsOf: url)
+            let productIdentifiers = try PropertyListSerialization.propertyList(from: data, options: .mutableContainersAndLeaves, format: nil) as? [String]
+            return productIdentifiers ?? []
+        } catch let error as NSError {
+            print("\(error.localizedDescription)")
+            return []
         }
     }
 }
