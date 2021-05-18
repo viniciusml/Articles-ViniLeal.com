@@ -18,7 +18,6 @@ struct InAppPurchaseApp: App {
         WindowGroup {
             Color.green
                 .ignoresSafeArea(.all)
-                .overlay(ContentView(container: ProductViewContainer(observer: observer, onRestoreTap: {}, onBuyTap: {})))
                 .overlay(ContentView(observer: observer, actionContainer: ActionContainer(onRestoreTap: {}, onBuyTap: {})))
                 .onAppear(perform: loadProducts)
         }
