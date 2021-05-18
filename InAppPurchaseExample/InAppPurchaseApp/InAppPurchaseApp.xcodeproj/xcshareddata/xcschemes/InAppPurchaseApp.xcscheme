@@ -60,6 +60,9 @@
             ReferencedContainer = "container:InAppPurchaseApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <StoreKitConfigurationFileReference
+         identifier = "../InAppPurchaseApp/InAppPurchaseIntegrationTests/CakeShop.storekit">
+      </StoreKitConfigurationFileReference>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
