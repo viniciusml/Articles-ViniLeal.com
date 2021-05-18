@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct ProductsView: View {
-    let container: ProductViewContainer
+    @ObservedObject var observer: PurchaseObserver
+    let actionContainer: ActionContainer
     
     var body: some View {
         VStack {
@@ -20,7 +21,7 @@ struct ProductsView: View {
             VStack(spacing: 20) {
                 HStack {
                     Spacer()
-                    Button(action: container.onRestoreTap, label: {
+                    Button(action: actionContainer.onRestoreTap, label: {
                         Text("Restore")
                             .foregroundColor(.black)
                             .font(.body)
@@ -28,8 +29,8 @@ struct ProductsView: View {
                             .padding([.top, .trailing], 20)
                     })
                 }
-                ForEach(container.observer.products) { product in
-                    ProductRow(title: product.title, price: product.price, onBuyTap: container.onBuyTap)
+                ForEach(observer.products) { product in
+                    ProductRow(title: product.title, price: product.price, onBuyTap: actionContainer.onBuyTap)
                         .cornerRadius(12)
                         .background(Color.white.shadow(color: Color.black.opacity(0.15), radius: 3))
                         .padding(.horizontal, 12)

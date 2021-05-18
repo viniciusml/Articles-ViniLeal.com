@@ -7,17 +7,17 @@
 
 import SwiftUI
 
-struct ProductViewContainer {
-    let observer: PurchaseObserver
+struct ActionContainer {
     let onRestoreTap: () -> Void
     let onBuyTap: () -> Void
 }
 
 struct ContentView: View {
-    let container: ProductViewContainer
+    @ObservedObject var observer: PurchaseObserver
+    let actionContainer: ActionContainer
     
     var body: some View {
-        ProductsView(container: container)
+        ProductsView(observer: observer, actionContainer: actionContainer)
     }
 }
 
@@ -26,11 +26,8 @@ struct ContentView_Previews: PreviewProvider {
         Color.green
             .ignoresSafeArea(.all)
             .overlay(ContentView(
-                        container: ProductViewContainer(
-                            observer: PurchaseObserver(
-                                viewModel: ViewModel(
-                                    products: [])),
-                            onRestoreTap: {},
-                            onBuyTap: {})))
+                        observer: PurchaseObserver(
+                            viewModel: ViewModel(products: [])),
+                        actionContainer: ActionContainer(onRestoreTap: {}, onBuyTap: {})))
     }
 }

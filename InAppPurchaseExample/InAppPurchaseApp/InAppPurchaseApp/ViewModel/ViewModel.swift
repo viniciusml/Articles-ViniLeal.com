@@ -21,6 +21,10 @@ class PurchaseObserver: ObservableObject {
     
     func setViewModel(_ newViewModel: ViewModel) {
         viewModel = newViewModel
+        
+        DispatchQueue.main.async {
+            self.objectWillChange.send()
+        }
     }
 }
 

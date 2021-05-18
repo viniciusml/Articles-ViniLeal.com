@@ -16,6 +16,7 @@ struct ProductRow: View {
         HStack {
             VStack(alignment: .leading, spacing: 2) {
                 Text("\(title)")
+                    .foregroundColor(.black)
                 Text(price)
                     .font(.subheadline)
             }
