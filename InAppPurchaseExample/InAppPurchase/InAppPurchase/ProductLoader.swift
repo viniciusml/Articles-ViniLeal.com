@@ -17,7 +17,14 @@ public struct ProductRequestFactory {
     }
 }
 
-public class ProductLoader: NSObject {
+public protocol ProductLoading {
+    typealias ProductsResult = Result<[SKProduct], Error>
+    
+    var completion: ((ProductsResult) -> Void)? { get set }
+    func fetchProducts()
+}
+
+public class ProductLoader: NSObject, ProductLoading {
     public typealias ProductsResult = Result<[SKProduct], Error>
     
     private var request: SKProductsRequest
