@@ -12,7 +12,12 @@ import SwiftUI
 struct InAppPurchaseApp: App {
     
     let productLoader = ProductLoader(request: ProductRequestFactory.make(with: IDLoader.ids))
+    let productResultHandler = MainQueueDecorator(ProductResultHandler())
     let observer = PurchaseObserver()
+    
+    init() {
+        productLoader.delegate = productResultHandler
+    }
     
     var body: some Scene {
         WindowGroup {
@@ -25,7 +30,7 @@ struct InAppPurchaseApp: App {
     
     private func loadProducts() {
         productLoader.fetchProducts()
-        productLoader.completion = { result in
+        productResultHandler.completion = { result in
             if let products = try? result.get() {
                 observer.setViewModel(
                     ViewModel(products: products.map { Product(id: $0.productIdentifier, title: $0.localizedTitle, price: $0.price.stringValue) })
