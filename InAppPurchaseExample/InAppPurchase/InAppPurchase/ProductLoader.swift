@@ -17,10 +17,16 @@ public struct ProductRequestFactory {
     }
 }
 
+public protocol ProductLoaderDelegate: class {
+    typealias ProductsResult = Result<[SKProduct], Error>
+    
+    func didFetchProducts(with result: ProductsResult)
+}
+
 public protocol ProductLoading {
     typealias ProductsResult = Result<[SKProduct], Error>
     
-    var completion: ((ProductsResult) -> Void)? { get set }
+    var delegate: ProductLoaderDelegate? { get }
     func fetchProducts()
 }
 
@@ -28,7 +34,7 @@ public class ProductLoader: NSObject, ProductLoading {
     public typealias ProductsResult = Result<[SKProduct], Error>
     
     private var request: SKProductsRequest
-    public var completion: ((ProductsResult) -> Void)?
+    public weak var delegate: ProductLoaderDelegate?
     
     public init(request: SKProductsRequest) {
         self.request = request
@@ -43,11 +49,11 @@ public class ProductLoader: NSObject, ProductLoading {
 
 extension ProductLoader: SKProductsRequestDelegate {
     public func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
-        completion?(.success(response.products))
+        delegate?.didFetchProducts(with: .success(response.products))
     }
     
     public func request(_ request: SKRequest, didFailWithError error: Error) {
-        completion?(.failure(error))
+        delegate?.didFetchProducts(with: .failure(error))
         requestDidFinish(request)
     }
     

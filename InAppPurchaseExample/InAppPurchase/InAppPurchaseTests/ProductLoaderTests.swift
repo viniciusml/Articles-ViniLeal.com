@@ -12,13 +12,13 @@ import XCTest
 class ProductLoaderTests: XCTestCase {
 
     func test_init_setsDelegate() {
-        let (request, sut) = makeSUT()
+        let (request, sut, _) = makeSUT()
 
         XCTAssertTrue(request.delegate === sut)
     }
     
     func test_fetchProducts_startsRequest() {
-        let (request, sut) = makeSUT()
+        let (request, sut, _) = makeSUT()
         
         sut.fetchProducts()
         
@@ -26,30 +26,30 @@ class ProductLoaderTests: XCTestCase {
     }
     
     func test_completeWithError_onRequestFailure() {
-        let (request, sut) = makeSUT()
+        let (request, sut, delegate) = makeSUT()
         let expectedError = anyNSError()
         
         sut.fetchProducts()
         
-        expect(sut, toCompleteWith: .failure(expectedError), when: {
+        expect(delegate, toCompleteWith: .failure(expectedError), when: {
             request.completeWith(expectedError)
         })
     }
     
     func test_completesWithResponse_onRequestSuccess() {
-        let (request, sut) = makeSUT()
+        let (request, sut, delegate) = makeSUT()
         let expectedProductsResponse = makeProductsResponse(productIDs: Set(arrayLiteral: "product1", "product2"))
         let expectedProducts = [makeProduct(id: "product1"), makeProduct(id: "product2")]
         
         sut.fetchProducts()
         
-        expect(sut, toCompleteWith: .success(expectedProducts), when: {
+        expect(delegate, toCompleteWith: .success(expectedProducts), when: {
             request.completeWith(expectedProductsResponse)
         })
     }
     
     func test_fetchProductsTwice_performsRequestTwice() {
-        let (request, sut) = makeSUT()
+        let (request, sut, _) = makeSUT()
         
         sut.fetchProducts()
         sut.fetchProducts()
@@ -58,7 +58,7 @@ class ProductLoaderTests: XCTestCase {
     }
     
     func test_completeWithError_cancelsRequest() {
-        let (request, sut) = makeSUT()
+        let (request, sut, _) = makeSUT()
         let expectedError = anyNSError()
         
         sut.fetchProducts()
@@ -69,27 +69,29 @@ class ProductLoaderTests: XCTestCase {
     
     // MARK: - Helpers
     
-    private func makeSUT() -> (request: ProductsRequestSpy, sut: ProductLoader) {
+    private func makeSUT() -> (request: ProductsRequestSpy, sut: ProductLoader, delegate: ProductLoaderDelegateSpy) {
         let request = ProductsRequestSpy()
         let sut = ProductLoader(request: request)
-        return (request, sut)
+        let delegate = ProductLoaderDelegateSpy()
+        sut.delegate = delegate
+        return (request, sut, delegate)
     }
     
-    private func expect(_ sut: ProductLoader, toCompleteWith expectedResult: ProductLoader.ProductsResult, when action: () -> Void, file: StaticString = #filePath, line: UInt = #line) {
+    private func expect(_ delegate: ProductLoaderDelegateSpy, toCompleteWith expectedResult: ProductLoader.ProductsResult, when action: () -> Void, file: StaticString = #filePath, line: UInt = #line) {
         
-        sut.completion = { receivedResult in
-            switch (receivedResult, expectedResult) {
-            case let (.success(receivedProducts), .success(expectedProducts)):
-                XCTAssertEqual(receivedProducts.sortedIDs, expectedProducts.sortedIDs, file: file, line: line)
-                
-            case let (.failure(receivedError as NSError), .failure(expectedError as NSError)):
-                XCTAssertEqual(receivedError, expectedError, file: file, line: line)
-                
-            default:
-                XCTFail("Expected \(expectedResult), got \(receivedResult) instead", file: file, line: line)
-            }
-        }
         action()
+        let receivedResult = delegate.receivedResult!
+        
+        switch (receivedResult, expectedResult) {
+        case let (.success(receivedProducts), .success(expectedProducts)):
+            XCTAssertEqual(receivedProducts.sortedIDs, expectedProducts.sortedIDs, file: file, line: line)
+            
+        case let (.failure(receivedError as NSError), .failure(expectedError as NSError)):
+            XCTAssertEqual(receivedError, expectedError, file: file, line: line)
+            
+        default:
+            XCTFail("Expected \(expectedResult), got \(receivedResult) instead", file: file, line: line)
+        }
     }
     
     private func anyNSError() -> NSError {
@@ -102,6 +104,14 @@ class ProductLoaderTests: XCTestCase {
     
     private func makeProduct(id: String) -> FakeProduct {
         FakeProduct(fakeProductIdentifier: id)
+    }
+}
+
+private class ProductLoaderDelegateSpy: ProductLoaderDelegate {
+    private(set) var receivedResult: Result<[SKProduct], Error>?
+    
+    func didFetchProducts(with result: ProductsResult) {
+        receivedResult = result
     }
 }
 
