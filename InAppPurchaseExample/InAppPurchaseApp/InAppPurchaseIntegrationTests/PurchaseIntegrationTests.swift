@@ -15,9 +15,9 @@ class PurchaseIntegrationTests: XCTestCase {
         try makeSession(withIdentifier: "CakeShop")
         
         let identifiers = expectedIdentifiers(.saltedCaramelCake, .redVelvetCake)
-        let (observer, loader) = makeSUT(identifiers: identifiers)
+        let (observer, loader, delegate) = makeSUT(identifiers: identifiers)
         
-        let fetchedProducts = fetchProducts(with: loader)
+        let fetchedProducts = fetchProducts(with: loader, delegate: delegate)
         try expectPurchased(fetchedProducts.first, with: observer, toHaveIdentifier: identifiers[0], andState: .purchased)
     }
     
@@ -25,9 +25,9 @@ class PurchaseIntegrationTests: XCTestCase {
         let session =  try makeSession(withIdentifier: "CakeShop")
         session.interruptPurchase()
         let identifiers = expectedIdentifiers(.saltedCaramelCake, .redVelvetCake)
-        let (observer, loader) = makeSUT(identifiers: identifiers)
+        let (observer, loader, delegate) = makeSUT(identifiers: identifiers)
         
-        let fetchedProducts = fetchProducts(with: loader)
+        let fetchedProducts = fetchProducts(with: loader, delegate: delegate)
         try expectPurchased(fetchedProducts.last, with: observer, toHaveIdentifier: identifiers[1], andState: .failed)
     }
     
@@ -41,27 +41,29 @@ class PurchaseIntegrationTests: XCTestCase {
         return session
     }
     
-    private func makeSUT(identifiers: [String]) -> (observer: PaymentTransactionObserver, loader: ProductLoader) {
+    private func makeSUT(identifiers: [String]) -> (observer: PaymentTransactionObserver, loader: ProductLoader, delegate: ProductLoaderDelegateSpy) {
         let transactionObserver = PaymentTransactionObserver()
         let purchaseLoader = ProductLoader(request: ProductRequestFactory.make(with: identifiers))
-        return (transactionObserver, purchaseLoader)
+        let delegate = ProductLoaderDelegateSpy()
+        purchaseLoader.delegate = delegate
+        return (transactionObserver, purchaseLoader, delegate)
     }
     
-    private func fetchProducts(with loader: ProductLoader, file: StaticString = #filePath, line: UInt = #line) -> [SKProduct] {
+    private func fetchProducts(with loader: ProductLoader, delegate: ProductLoaderDelegateSpy, file: StaticString = #filePath, line: UInt = #line) -> [SKProduct] {
         let exp = expectation(description: "Wait for load completion")
+        loader.fetchProducts()
         
         var loadedProducts = [SKProduct]()
-        loader.fetchProducts()
-        loader.completion = { result in
+        delegate.completion = { result in
             switch result {
             case let .success(fetchedProducts):
                 loadedProducts.append(contentsOf: fetchedProducts)
-                
             case let .failure(error):
                 XCTFail("Expected products, got \(error) instead", file: file, line: line)
             }
             exp.fulfill()
         }
+        
         wait(for: [exp], timeout: 5.0)
         
         return loadedProducts
@@ -73,9 +75,13 @@ class PurchaseIntegrationTests: XCTestCase {
         
         observer.buy(product)
         observer.onTransactionsUpdate = { result in
-            if let transaction = try? result.get().first {
+            switch result {
+            case let .success(transactions):
+                let transaction = transactions.first!
                 XCTAssertEqual(transaction.identifier, identifier)
                 XCTAssertEqual(transaction.state, state)
+            case let .failure(error):
+                XCTFail("Expected success, got \(error) instead")
             }
             exp.fulfill()
         }
@@ -89,12 +95,20 @@ class PurchaseIntegrationTests: XCTestCase {
     
     private enum Bakery: String {
         // Non-Consumable
-        case carrotCake = "com.inAppPurchase.carrot.cake"
-        case chocolateCake = "com.inAppPurchase.chocolate.cake"
+        case carrotCake = "com.inAppPurchaseExample.carrotCake"
+        case chocolateCake = "com.inAppPurchaseExample.chocolateCake"
         
         // Consumable
-        case saltedCaramelCake = "com.inAppPurchase.salted.caramel.cake"
-        case redVelvetCake = "com.inAppPurchase.red.velvet.cake"
+        case saltedCaramelCake = "com.inAppPurchaseExample.saltedCaramelCake"
+        case redVelvetCake = "com.inAppPurchaseExample.redVelvetCake"
+    }
+    
+    private class ProductLoaderDelegateSpy: ProductLoaderDelegate {
+        var completion: ((ProductsResult) -> Void)?
+        
+        func didFetchProducts(with result: ProductsResult) {
+            completion?(result)
+        }
     }
 }
 
