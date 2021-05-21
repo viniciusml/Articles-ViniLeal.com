@@ -7,12 +7,24 @@
 
 import StoreKit
 
-public class PaymentTransactionObserver: NSObject {
+public protocol PaymentTransactionObserverDelegate: class {
+    typealias TransactionResult = Result<[PaymentTransaction], Error>
+    
+    func didUpdateTransactions(with result: TransactionResult)
+}
+
+public protocol PaymentTransactionObserving {
+    var delegate: PaymentTransactionObserverDelegate? { get }
+    func buy(_ product: SKProduct)
+    func restore()
+}
+
+public class PaymentTransactionObserver: NSObject, PaymentTransactionObserving {
     public typealias TransactionResult = Result<[PaymentTransaction], Error>
     
     private let queue: SKPaymentQueue
     private var restoredTransactions = [PaymentTransaction]()
-    public var onTransactionsUpdate: ((TransactionResult) -> Void)?
+    public weak var delegate: PaymentTransactionObserverDelegate?
     
     public init(queue: SKPaymentQueue = .default()) {
         self.queue = queue
@@ -31,14 +43,14 @@ public class PaymentTransactionObserver: NSObject {
     }
     
     private func purchased(_ transaction: SKPaymentTransaction) {
-        completeWith(.transaction(.purchased, transaction.payment.productIdentifier))
+        completeWith([.transaction(.purchased, transaction.payment.productIdentifier)])
         queue.finishTransaction(transaction)
     }
     
     private func failed(_ transaction: SKPaymentTransaction) {
         guard transaction.paymentWasNotCancelled else { return }
         
-        completeWith(.transaction(.failed, transaction.payment.productIdentifier))
+        completeWith([.transaction(.failed, transaction.payment.productIdentifier)])
         queue.finishTransaction(transaction)
     }
     
@@ -49,16 +61,12 @@ public class PaymentTransactionObserver: NSObject {
         queue.finishTransaction(transaction)
     }
     
-    private func completeWith(_ transactions: PaymentTransaction...) {
-        completeWith(transactions)
-    }
-    
     private func completeWith(_ transactions: [PaymentTransaction]) {
-        onTransactionsUpdate?(.success(transactions))
+        delegate?.didUpdateTransactions(with: .success(transactions))
     }
     
     private func completeWith(_ error: Error) {
-        onTransactionsUpdate?(.failure(error))
+        delegate?.didUpdateTransactions(with: .failure(error))
     }
 }
 
@@ -72,7 +80,7 @@ extension PaymentTransactionObserver: SKPaymentTransactionObserver {
     }
     
     public func paymentQueue(_ queue: SKPaymentQueue, restoreCompletedTransactionsFailedWithError error: Error) {
-        onTransactionsUpdate?(.failure(error))
+        delegate?.didUpdateTransactions(with: .failure(error))
     }
     
     public func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {

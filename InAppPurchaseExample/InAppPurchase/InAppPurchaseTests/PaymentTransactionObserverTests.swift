@@ -17,13 +17,13 @@ class PaymentTransactionObserverTests: XCTestCase {
     }
     
     func test_init_addsObserverToQueue() {
-        let (queue, sut) = makeSUT()
+        let (queue, sut, _) = makeSUT()
         
         XCTAssertTrue(queue.transactionObservers.first === sut)
     }
     
     func test_buy_addsPaymentRequestToQueue() {
-        let (queue, sut) = makeSUT()
+        let (queue, sut, _) = makeSUT()
         
         let product = TestProduct(identifier: "a product")
         sut.buy(product)
@@ -33,19 +33,20 @@ class PaymentTransactionObserverTests: XCTestCase {
     }
     
     func test_updatedTransactions_purchasingOrDeferred_doNotMessageQueue() {
-        let (queue, sut) = makeSUT()
+        let (queue, sut, delegate) = makeSUT()
         
-        sut.paymentQueue(queue, updatedTransactions: [.purchasing, .deferred])
+        expect(delegate, toNotCompleteWhen: {
+            sut.paymentQueue(queue, updatedTransactions: [.purchasing, .deferred])
+        })
         
         XCTAssertTrue(queue.messages.isEmpty)
-        XCTAssertNil(sut.onTransactionsUpdate)
     }
     
     func test_updatedTransactions_purchased_messagesQueue() {
-        let (queue, sut) = makeSUT()
+        let (queue, sut, delegate) = makeSUT()
         let identifier = "a product identifier"
         
-        expect(sut, toCompleteWith: .make(.purchased, with: identifier), when: {
+        expect(delegate, toCompleteWith: .make(.purchased, with: identifier), when: {
             sut.paymentQueue(queue, updatedTransactions: [.purchased(identifier: identifier)])
         })
         
@@ -53,11 +54,11 @@ class PaymentTransactionObserverTests: XCTestCase {
     }
     
     func test_updatedTransactions_failed_messagesQueue() {
-        let (queue, sut) = makeSUT()
+        let (queue, sut, delegate) = makeSUT()
         let identifier = "a failed product identifier"
         let error = NSError(domain: "test error", code: 0)
         
-        expect(sut, toCompleteWith: .make(.failed, with: identifier), when: {
+        expect(delegate, toCompleteWith: .make(.failed, with: identifier), when: {
             sut.paymentQueue(queue, updatedTransactions: [.failed(error: error, identifier: identifier)])
         })
         
@@ -65,11 +66,11 @@ class PaymentTransactionObserverTests: XCTestCase {
     }
     
     func test_updatedTransactions_failedWithCancellation_doesNotMessageQueue() {
-        let (queue, sut) = makeSUT()
+        let (queue, sut, delegate) = makeSUT()
         let identifier = "a failed product identifier"
         let error = NSError(domain: "test error", code: SKError.paymentCancelled.rawValue)
         
-        expect(sut, toNotCompleteWhen: {
+        expect(delegate, toNotCompleteWhen: {
             sut.paymentQueue(queue, updatedTransactions: [.failed(error: error, identifier: identifier)])
         })
         
@@ -80,16 +81,16 @@ class PaymentTransactionObserverTests: XCTestCase {
         PaymentQueueSpy.stubbCompletedTransactions([
             .restored(originalIdentifier: nil)
         ])
-        let (_, sut) = makeSUT()
+        let (_, sut, delegate) = makeSUT()
         
-        expect(sut, toNotCompleteWhen: sut.restore)
+        expect(delegate, toNotCompleteWhen: sut.restore)
     }
     
     func test_restore_withoutOriginalIdentifier_doesNotMessageQueue() {
         PaymentQueueSpy.stubbCompletedTransactions([
             .restored(originalIdentifier: nil)
         ])
-        let (queue, sut) = makeSUT()
+        let (queue, sut, _) = makeSUT()
         
         sut.restore()
         
@@ -99,9 +100,9 @@ class PaymentTransactionObserverTests: XCTestCase {
     func test_restore_withMultipleTransactions_completesWithSuccess() {
         let transactions = makeRestoredTransactions("1", "2", "3")
         PaymentQueueSpy.stubbCompletedTransactions(transactions.sk)
-        let (queue, sut) = makeSUT()
+        let (queue, sut, delegate) = makeSUT()
         
-        expect(sut, toCompleteWith: .success(transactions.domain), when: sut.restore)
+        expect(delegate, toCompleteWith: .success(transactions.domain), when: sut.restore)
         
         XCTAssertEqual(queue.messages, [.restore, .finish, .finish, .finish])
     }
@@ -109,30 +110,32 @@ class PaymentTransactionObserverTests: XCTestCase {
     func test_restore_twiceWithDifferentValues_completesWithSuccess() {
         let transactions = makeRestoredTransactions("1", "2", "3")
         PaymentQueueSpy.stubbCompletedTransactions(transactions.sk)
-        let (_, sut) = makeSUT()
+        let (_, sut, delegate) = makeSUT()
         
-        expect(sut, toCompleteWith: .success(transactions.domain), when: sut.restore)
+        expect(delegate, toCompleteWith: .success(transactions.domain), when: sut.restore)
         
         let newTransactions = makeRestoredTransactions("4", "5", "6")
         PaymentQueueSpy.stubbCompletedTransactions(newTransactions.sk)
         
-        expect(sut, toCompleteWith: .success(newTransactions.domain), when: sut.restore)
+        expect(delegate, toCompleteWith: .success(newTransactions.domain), when: sut.restore)
     }
     
     func test_restore_withError_completesWithFailure() {
         let error = NSError(domain: "test error", code: 0)
         PaymentQueueSpy.stubbError(error)
-        let (_, sut) = makeSUT()
+        let (_, sut, delegate) = makeSUT()
         
-        expect(sut, toCompleteWith: .failure(error), when: sut.restore)
+        expect(delegate, toCompleteWith: .failure(error), when: sut.restore)
     }
     
     // MARK: Helpers
     
-    private func makeSUT() -> (PaymentQueueSpy, PaymentTransactionObserver) {
+    private func makeSUT() -> (PaymentQueueSpy, PaymentTransactionObserver, PaymentTransactionObserverDelegateSpy) {
         let queue = PaymentQueueSpy()
         let sut = PaymentTransactionObserver(queue: queue)
-        return (queue, sut)
+        let delegate = PaymentTransactionObserverDelegateSpy()
+        sut.delegate = delegate
+        return (queue, sut, delegate)
     }
     
     private func makeRestoredTransactions(_ identifiers: String?...) -> (sk: [SKPaymentTransaction], domain: [PaymentTransaction]) {
@@ -141,52 +144,48 @@ class PaymentTransactionObserverTests: XCTestCase {
         return (skTransactions, domainTransactions)
     }
     
-    private func expect(_ sut: PaymentTransactionObserver, toCompleteWith expectedTransaction: PaymentTransaction, when action: () -> Void, file: StaticString = #filePath, line: UInt = #line) {
-        let exp = expectation(description: "wait for completion")
+    private func expect(_ delegate: PaymentTransactionObserverDelegateSpy, toCompleteWith expectedTransaction: PaymentTransaction, when action: () -> Void, file: StaticString = #filePath, line: UInt = #line) {
+        action()
         var receivedTransaction: PaymentTransaction?
         
-        sut.onTransactionsUpdate = { result in
-            if let transactions = try? result.get() {
-                receivedTransaction = transactions.first
-            }
-            exp.fulfill()
+        let result = delegate.result!
+        if let transactions = try? result.get() {
+            receivedTransaction = transactions.first
         }
-        action()
         
-        wait(for: [exp], timeout: 0.1)
         XCTAssertEqual(receivedTransaction, expectedTransaction)
     }
     
-    private func expect(_ sut: PaymentTransactionObserver, toCompleteWith expectedResult: PaymentTransactionObserver.TransactionResult, when action: () -> Void, file: StaticString = #filePath, line: UInt = #line) {
-        let exp = expectation(description: "wait for completion")
-        
-        sut.onTransactionsUpdate = { receivedResult in
-            switch (receivedResult, expectedResult) {
-            case (.success(let receivedTransactions), .success(let expectedTransactions)):
-                XCTAssertEqual(receivedTransactions, expectedTransactions, file: file, line: line)
-            case (.failure(let receivedError as NSError), .failure(let expectedError as NSError)):
-                XCTAssertEqual(receivedError, expectedError, file: file, line: line)
-            default:
-                XCTFail("Expected \(expectedResult), got \(receivedResult) instead", file: file, line: line)
-            }
-            exp.fulfill()
-        }
+    private func expect(_ delegate: PaymentTransactionObserverDelegateSpy, toCompleteWith expectedResult: PaymentTransactionObserver.TransactionResult, when action: () -> Void, file: StaticString = #filePath, line: UInt = #line) {
         action()
         
-        wait(for: [exp], timeout: 0.1)
-        
+        let receivedResult = delegate.result!
+        switch (receivedResult, expectedResult) {
+        case (.success(let receivedTransactions), .success(let expectedTransactions)):
+            XCTAssertEqual(receivedTransactions, expectedTransactions, file: file, line: line)
+        case (.failure(let receivedError as NSError), .failure(let expectedError as NSError)):
+            XCTAssertEqual(receivedError, expectedError, file: file, line: line)
+        default:
+            XCTFail("Expected \(expectedResult), got \(receivedResult) instead", file: file, line: line)
+        }
     }
     
-    private func expect(_ sut: PaymentTransactionObserver, toNotCompleteWhen action: () -> Void, file: StaticString = #filePath, line: UInt = #line) {
-        let exp = expectation(description: "wait for completion")
-        exp.isInverted = true
-        
-        sut.onTransactionsUpdate = { _ in
-            exp.fulfill()
-        }
+    private func expect(_ delegate: PaymentTransactionObserverDelegateSpy, toNotCompleteWhen action: () -> Void, file: StaticString = #filePath, line: UInt = #line) {
         action()
         
-        wait(for: [exp], timeout: 0.1)
+        XCTAssertNil(delegate.result, file: file, line: line)
+    }
+    
+    private class PaymentTransactionObserverDelegateSpy: PaymentTransactionObserverDelegate {
+        private var results: [TransactionResult] = []
+        
+        var result: TransactionResult? {
+            results.last
+        }
+        
+        func didUpdateTransactions(with result: TransactionResult) {
+            results.append(result)
+        }
     }
     
     private class PaymentQueueSpy: SKPaymentQueue {
