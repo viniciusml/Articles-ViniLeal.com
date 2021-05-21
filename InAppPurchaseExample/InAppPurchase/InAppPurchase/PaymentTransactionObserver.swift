@@ -14,7 +14,7 @@ public protocol PaymentTransactionObserverDelegate: class {
 }
 
 public protocol PaymentTransactionObserving {
-    var delegate: PaymentTransactionObserverDelegate? { get }
+    var delegate: PaymentTransactionObserverDelegate? { get set }
     func buy(_ product: SKProduct)
     func restore()
 }

@@ -26,7 +26,7 @@ public protocol ProductLoaderDelegate: class {
 public protocol ProductLoading {
     typealias ProductsResult = Result<[SKProduct], Error>
     
-    var delegate: ProductLoaderDelegate? { get }
+    var delegate: ProductLoaderDelegate? { get set }
     func fetchProducts()
 }
 
