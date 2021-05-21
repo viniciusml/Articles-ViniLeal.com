@@ -22,6 +22,7 @@
 		D87CDC5C260D301200DE2597 /* PurchaseIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87CDC5B260D301200DE2597 /* PurchaseIntegrationTests.swift */; };
 		D87CDC84260D433300DE2597 /* InAppPurchase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D87CDC83260D433300DE2597 /* InAppPurchase.framework */; };
 		D87CDC85260D433300DE2597 /* InAppPurchase.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D87CDC83260D433300DE2597 /* InAppPurchase.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		D887B6FF2658648700505DE9 /* MainQueueDecorator+PaymentTransactionHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = D887B6FE2658648700505DE9 /* MainQueueDecorator+PaymentTransactionHandling.swift */; };
 		D8E903862657018100290C5B /* MainQueueDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E903852657018100290C5B /* MainQueueDecorator.swift */; };
 		D8E9038B265701A400290C5B /* MainQueueDecorator+ProductResultHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E9038A265701A400290C5B /* MainQueueDecorator+ProductResultHandling.swift */; };
 /* End PBXBuildFile section */
@@ -86,6 +87,7 @@
 		D87CDC39260D2F9D00DE2597 /* CakeShop.storekit */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CakeShop.storekit; sourceTree = "<group>"; };
 		D87CDC5B260D301200DE2597 /* PurchaseIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PurchaseIntegrationTests.swift; sourceTree = "<group>"; };
 		D87CDC83260D433300DE2597 /* InAppPurchase.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = InAppPurchase.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D887B6FE2658648700505DE9 /* MainQueueDecorator+PaymentTransactionHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainQueueDecorator+PaymentTransactionHandling.swift"; sourceTree = "<group>"; };
 		D8E903852657018100290C5B /* MainQueueDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainQueueDecorator.swift; sourceTree = "<group>"; };
 		D8E9038A265701A400290C5B /* MainQueueDecorator+ProductResultHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainQueueDecorator+ProductResultHandling.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -213,6 +215,7 @@
 				D87CDBDC260D2EB100DE2597 /* InAppPurchaseApp.swift */,
 				D8E903852657018100290C5B /* MainQueueDecorator.swift */,
 				D8E9038A265701A400290C5B /* MainQueueDecorator+ProductResultHandling.swift */,
+				D887B6FE2658648700505DE9 /* MainQueueDecorator+PaymentTransactionHandling.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -396,6 +399,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D887B6FF2658648700505DE9 /* MainQueueDecorator+PaymentTransactionHandling.swift in Sources */,
 				D87CDBDF260D2EB100DE2597 /* ContentView.swift in Sources */,
 				D8E903862657018100290C5B /* MainQueueDecorator.swift in Sources */,
 				D8317BA2261E5D52009F38B7 /* Product.swift in Sources */,
