@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		D803AC522650800D0088B6B7 /* product_ids.plist in Resources */ = {isa = PBXBuildFile; fileRef = D803AC512650800D0088B6B7 /* product_ids.plist */; };
 		D8317B9D261E5D38009F38B7 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8317B9C261E5D38009F38B7 /* ViewModel.swift */; };
-		D8317BA2261E5D52009F38B7 /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8317BA1261E5D52009F38B7 /* Product.swift */; };
+		D8317BA2261E5D52009F38B7 /* AvailableProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8317BA1261E5D52009F38B7 /* AvailableProduct.swift */; };
 		D8317BA7261E5D79009F38B7 /* ProductsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8317BA6261E5D79009F38B7 /* ProductsView.swift */; };
 		D8317BAC261E5D91009F38B7 /* ProductRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8317BAB261E5D91009F38B7 /* ProductRow.swift */; };
 		D87CDBDD260D2EB100DE2597 /* InAppPurchaseApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87CDBDC260D2EB100DE2597 /* InAppPurchaseApp.swift */; };
@@ -26,6 +26,8 @@
 		D8905BE5265AD4BB00005F47 /* ProductResultHandlingMainQueueDecoratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8905BE4265AD4BB00005F47 /* ProductResultHandlingMainQueueDecoratorTests.swift */; };
 		D8A1C75A265C44EC002363EC /* PaymentTransactionHandlingMainQueueDecoratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A1C759265C44EC002363EC /* PaymentTransactionHandlingMainQueueDecoratorTests.swift */; };
 		D8A1C75F265C49F7002363EC /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A1C75E265C49F7002363EC /* TestHelpers.swift */; };
+		D8A1C767265C4BA2002363EC /* PurchaseCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A1C766265C4BA2002363EC /* PurchaseCoordinator.swift */; };
+		D8A1C76F265C4C6F002363EC /* PurchasedProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A1C76E265C4C6F002363EC /* PurchasedProduct.swift */; };
 		D8E903862657018100290C5B /* MainQueueDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E903852657018100290C5B /* MainQueueDecorator.swift */; };
 		D8E9038B265701A400290C5B /* MainQueueDecorator+ProductResultHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E9038A265701A400290C5B /* MainQueueDecorator+ProductResultHandling.swift */; };
 /* End PBXBuildFile section */
@@ -71,7 +73,7 @@
 /* Begin PBXFileReference section */
 		D803AC512650800D0088B6B7 /* product_ids.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = product_ids.plist; sourceTree = "<group>"; };
 		D8317B9C261E5D38009F38B7 /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
-		D8317BA1261E5D52009F38B7 /* Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
+		D8317BA1261E5D52009F38B7 /* AvailableProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvailableProduct.swift; sourceTree = "<group>"; };
 		D8317BA6261E5D79009F38B7 /* ProductsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsView.swift; sourceTree = "<group>"; };
 		D8317BAB261E5D91009F38B7 /* ProductRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductRow.swift; sourceTree = "<group>"; };
 		D87CDBD9260D2EB100DE2597 /* InAppPurchaseApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = InAppPurchaseApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -94,6 +96,8 @@
 		D8905BE4265AD4BB00005F47 /* ProductResultHandlingMainQueueDecoratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductResultHandlingMainQueueDecoratorTests.swift; sourceTree = "<group>"; };
 		D8A1C759265C44EC002363EC /* PaymentTransactionHandlingMainQueueDecoratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentTransactionHandlingMainQueueDecoratorTests.swift; sourceTree = "<group>"; };
 		D8A1C75E265C49F7002363EC /* TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHelpers.swift; sourceTree = "<group>"; };
+		D8A1C766265C4BA2002363EC /* PurchaseCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseCoordinator.swift; sourceTree = "<group>"; };
+		D8A1C76E265C4C6F002363EC /* PurchasedProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchasedProduct.swift; sourceTree = "<group>"; };
 		D8E903852657018100290C5B /* MainQueueDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainQueueDecorator.swift; sourceTree = "<group>"; };
 		D8E9038A265701A400290C5B /* MainQueueDecorator+ProductResultHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainQueueDecorator+ProductResultHandling.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -225,6 +229,7 @@
 				D8E903852657018100290C5B /* MainQueueDecorator.swift */,
 				D8E9038A265701A400290C5B /* MainQueueDecorator+ProductResultHandling.swift */,
 				D887B6FE2658648700505DE9 /* MainQueueDecorator+PaymentTransactionHandling.swift */,
+				D8A1C766265C4BA2002363EC /* PurchaseCoordinator.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -232,7 +237,8 @@
 		D889639026506F6B0051E359 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				D8317BA1261E5D52009F38B7 /* Product.swift */,
+				D8317BA1261E5D52009F38B7 /* AvailableProduct.swift */,
+				D8A1C76E265C4C6F002363EC /* PurchasedProduct.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -412,9 +418,11 @@
 				D887B6FF2658648700505DE9 /* MainQueueDecorator+PaymentTransactionHandling.swift in Sources */,
 				D87CDBDF260D2EB100DE2597 /* ContentView.swift in Sources */,
 				D8E903862657018100290C5B /* MainQueueDecorator.swift in Sources */,
-				D8317BA2261E5D52009F38B7 /* Product.swift in Sources */,
+				D8317BA2261E5D52009F38B7 /* AvailableProduct.swift in Sources */,
+				D8A1C76F265C4C6F002363EC /* PurchasedProduct.swift in Sources */,
 				D8317BAC261E5D91009F38B7 /* ProductRow.swift in Sources */,
 				D8317B9D261E5D38009F38B7 /* ViewModel.swift in Sources */,
+				D8A1C767265C4BA2002363EC /* PurchaseCoordinator.swift in Sources */,
 				D87CDBDD260D2EB100DE2597 /* InAppPurchaseApp.swift in Sources */,
 				D8E9038B265701A400290C5B /* MainQueueDecorator+ProductResultHandling.swift in Sources */,
 				D8317BA7261E5D79009F38B7 /* ProductsView.swift in Sources */,
