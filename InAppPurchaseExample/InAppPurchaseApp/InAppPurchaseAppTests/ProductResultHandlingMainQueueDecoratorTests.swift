@@ -57,37 +57,4 @@ class ProductResultHandlingMainQueueDecoratorTests: XCTestCase {
         productLoader.delegate = sut
         return (productLoader, sut)
     }
-    
-    private func anyNSError() -> NSError {
-        NSError(domain: "test error", code: 0)
-    }
-    
-    private func anyProduct() -> SKProduct {
-        SKProduct()
-    }
-}
-
-func assertEqual(_ receivedError: Error?, _ expectedError: Error?, _ message: @autoclosure () -> String = "", file: StaticString = #filePath, line: UInt = #line) {
-    XCTAssertEqual(receivedError as NSError?, expectedError as NSError?, file: file, line: line)
-}
-
-extension Result {
-    
-    var failure: Error? {
-        switch self {
-        case let .failure(failure):
-            return failure
-        case .success:
-            return nil
-        }
-    }
-    
-    var success: Success? {
-        switch self {
-        case let .success(success):
-            return success
-        case .failure:
-            return nil
-        }
-    }
 }

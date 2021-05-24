@@ -94,15 +94,7 @@ class PaymentTransactionHandlingMainQueueDecoratorTests: XCTestCase {
         return (observer, sut)
     }
     
-    private func anyNSError() -> NSError {
-        NSError(domain: "test error", code: 0)
-    }
-    
     private func anyTransaction() -> PaymentTransaction {
         PaymentTransaction.transaction(.purchased, "identifier")
-    }
-    
-    private func anyProduct() -> SKProduct {
-        SKProduct()
     }
 }
