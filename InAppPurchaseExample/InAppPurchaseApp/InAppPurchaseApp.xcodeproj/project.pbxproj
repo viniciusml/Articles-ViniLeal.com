@@ -25,6 +25,7 @@
 		D887B6FA2658517400505DE9 /* PurchasedProductRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = D887B6F92658517400505DE9 /* PurchasedProductRow.swift */; };
 		D887B6FF2658648700505DE9 /* MainQueueDecorator+PaymentTransactionHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = D887B6FE2658648700505DE9 /* MainQueueDecorator+PaymentTransactionHandling.swift */; };
 		D8905BE5265AD4BB00005F47 /* ProductResultHandlingMainQueueDecoratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8905BE4265AD4BB00005F47 /* ProductResultHandlingMainQueueDecoratorTests.swift */; };
+		D8A1C75A265C44EC002363EC /* PaymentTransactionHandlingMainQueueDecoratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A1C759265C44EC002363EC /* PaymentTransactionHandlingMainQueueDecoratorTests.swift */; };
 		D8E903862657018100290C5B /* MainQueueDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E903852657018100290C5B /* MainQueueDecorator.swift */; };
 		D8E9038B265701A400290C5B /* MainQueueDecorator+ProductResultHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E9038A265701A400290C5B /* MainQueueDecorator+ProductResultHandling.swift */; };
 /* End PBXBuildFile section */
@@ -92,6 +93,7 @@
 		D887B6F92658517400505DE9 /* PurchasedProductRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchasedProductRow.swift; sourceTree = "<group>"; };
 		D887B6FE2658648700505DE9 /* MainQueueDecorator+PaymentTransactionHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainQueueDecorator+PaymentTransactionHandling.swift"; sourceTree = "<group>"; };
 		D8905BE4265AD4BB00005F47 /* ProductResultHandlingMainQueueDecoratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductResultHandlingMainQueueDecoratorTests.swift; sourceTree = "<group>"; };
+		D8A1C759265C44EC002363EC /* PaymentTransactionHandlingMainQueueDecoratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentTransactionHandlingMainQueueDecoratorTests.swift; sourceTree = "<group>"; };
 		D8E903852657018100290C5B /* MainQueueDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainQueueDecorator.swift; sourceTree = "<group>"; };
 		D8E9038A265701A400290C5B /* MainQueueDecorator+ProductResultHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainQueueDecorator+ProductResultHandling.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -192,6 +194,7 @@
 				D87CDBEE260D2EB200DE2597 /* InAppPurchaseAppTests.swift */,
 				D87CDBF0260D2EB200DE2597 /* Info.plist */,
 				D8905BE4265AD4BB00005F47 /* ProductResultHandlingMainQueueDecoratorTests.swift */,
+				D8A1C759265C44EC002363EC /* PaymentTransactionHandlingMainQueueDecoratorTests.swift */,
 			);
 			path = InAppPurchaseAppTests;
 			sourceTree = "<group>";
@@ -423,6 +426,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D8905BE5265AD4BB00005F47 /* ProductResultHandlingMainQueueDecoratorTests.swift in Sources */,
+				D8A1C75A265C44EC002363EC /* PaymentTransactionHandlingMainQueueDecoratorTests.swift in Sources */,
 				D87CDBEF260D2EB200DE2597 /* InAppPurchaseAppTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

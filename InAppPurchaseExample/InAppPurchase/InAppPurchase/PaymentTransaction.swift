@@ -17,7 +17,7 @@ public struct PaymentTransaction: Equatable {
     public let state: State
     public let identifier: String
     
-    static func transaction(_ state: State, _ identifier: String) -> PaymentTransaction {
+    public static func transaction(_ state: State, _ identifier: String) -> PaymentTransaction {
         PaymentTransaction(state: state, identifier: identifier)
     }
 }

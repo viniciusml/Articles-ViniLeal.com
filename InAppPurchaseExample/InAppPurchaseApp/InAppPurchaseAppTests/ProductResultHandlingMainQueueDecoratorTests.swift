@@ -21,7 +21,7 @@ class ProductResultHandlingMainQueueDecoratorTests: XCTestCase {
         productLoader.fetchProducts()
         sut.completion = { receivedResult in
             XCTAssert(Thread.isMainThread)
-            assertEqual(receivedResult.error, expectedResult.error)
+            assertEqual(receivedResult.failure, expectedResult.failure)
         }
     }
     
@@ -33,7 +33,7 @@ class ProductResultHandlingMainQueueDecoratorTests: XCTestCase {
         productLoader.fetchProducts()
         sut.completion = { receivedResult in
             XCTAssert(Thread.isMainThread)
-            XCTAssertEqual(receivedResult.products, expectedResult.products)
+            XCTAssertEqual(receivedResult.success, expectedResult.success)
         }
     }
     
@@ -67,25 +67,25 @@ class ProductResultHandlingMainQueueDecoratorTests: XCTestCase {
     }
 }
 
-private func assertEqual(_ receivedError: Error?, _ expectedError: Error?, _ message: @autoclosure () -> String = "", file: StaticString = #filePath, line: UInt = #line) {
+func assertEqual(_ receivedError: Error?, _ expectedError: Error?, _ message: @autoclosure () -> String = "", file: StaticString = #filePath, line: UInt = #line) {
     XCTAssertEqual(receivedError as NSError?, expectedError as NSError?, file: file, line: line)
 }
 
-private extension Result where Success == [SKProduct] {
+extension Result {
     
-    var error: Error? {
+    var failure: Error? {
         switch self {
-        case let .failure(error):
-            return error
+        case let .failure(failure):
+            return failure
         case .success:
             return nil
         }
     }
     
-    var products: Success? {
+    var success: Success? {
         switch self {
-        case let .success(products):
-            return products
+        case let .success(success):
+            return success
         case .failure:
             return nil
         }
