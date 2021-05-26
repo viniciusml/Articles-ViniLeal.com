@@ -28,6 +28,7 @@
 		D8A1C75F265C49F7002363EC /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A1C75E265C49F7002363EC /* TestHelpers.swift */; };
 		D8A1C767265C4BA2002363EC /* PurchaseCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A1C766265C4BA2002363EC /* PurchaseCoordinator.swift */; };
 		D8A1C76F265C4C6F002363EC /* PurchasedProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A1C76E265C4C6F002363EC /* PurchasedProduct.swift */; };
+		D8E6F424265EE7510012EA5A /* PurchaseCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E6F423265EE7510012EA5A /* PurchaseCoordinatorTests.swift */; };
 		D8E903862657018100290C5B /* MainQueueDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E903852657018100290C5B /* MainQueueDecorator.swift */; };
 		D8E9038B265701A400290C5B /* MainQueueDecorator+ProductResultHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E9038A265701A400290C5B /* MainQueueDecorator+ProductResultHandling.swift */; };
 /* End PBXBuildFile section */
@@ -98,6 +99,7 @@
 		D8A1C75E265C49F7002363EC /* TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHelpers.swift; sourceTree = "<group>"; };
 		D8A1C766265C4BA2002363EC /* PurchaseCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseCoordinator.swift; sourceTree = "<group>"; };
 		D8A1C76E265C4C6F002363EC /* PurchasedProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchasedProduct.swift; sourceTree = "<group>"; };
+		D8E6F423265EE7510012EA5A /* PurchaseCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseCoordinatorTests.swift; sourceTree = "<group>"; };
 		D8E903852657018100290C5B /* MainQueueDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainQueueDecorator.swift; sourceTree = "<group>"; };
 		D8E9038A265701A400290C5B /* MainQueueDecorator+ProductResultHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainQueueDecorator+ProductResultHandling.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -199,6 +201,7 @@
 				D8905BE4265AD4BB00005F47 /* ProductResultHandlingMainQueueDecoratorTests.swift */,
 				D8A1C759265C44EC002363EC /* PaymentTransactionHandlingMainQueueDecoratorTests.swift */,
 				D8A1C75E265C49F7002363EC /* TestHelpers.swift */,
+				D8E6F423265EE7510012EA5A /* PurchaseCoordinatorTests.swift */,
 			);
 			path = InAppPurchaseAppTests;
 			sourceTree = "<group>";
@@ -436,6 +439,7 @@
 				D8905BE5265AD4BB00005F47 /* ProductResultHandlingMainQueueDecoratorTests.swift in Sources */,
 				D8A1C75A265C44EC002363EC /* PaymentTransactionHandlingMainQueueDecoratorTests.swift in Sources */,
 				D8A1C75F265C49F7002363EC /* TestHelpers.swift in Sources */,
+				D8E6F424265EE7510012EA5A /* PurchaseCoordinatorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
