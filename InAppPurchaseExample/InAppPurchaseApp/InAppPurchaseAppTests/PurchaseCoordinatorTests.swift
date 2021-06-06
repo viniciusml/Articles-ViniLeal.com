@@ -13,40 +13,40 @@ import XCTest
 class PurchaseCoordinatorTests: XCTestCase {
     
     func test_loadProductsWithSuccess_deliversAvailableProducts() {
-        let productLoader = ProductLoaderSpy()
-        let transactionObserver = PaymentTransactionObserverStub()
-        let productResultHandler = ProductResultHandlerStub()
-        let transactionHandler = PaymentTransactionResultHandlerStub()
-        let sut = PurchaseCoordinator(
-            productLoader: productLoader,
-            transactionObserver: transactionObserver,
-            productResultHandler: productResultHandler,
-            transactionHandler: transactionHandler)
-        
-        let exp = expectation(description: "wait for load")
-        var availableProducts: [AvailableProduct]?
+        let (sut, productLoader, productResultHandler) = makeSUT()
         let expectedAvailableProducts = [
             AvailableProduct(id: "product 1", title: "title 1", price: "12"),
             AvailableProduct(id: "product 2", title: "title 2", price: "13")
         ]
         
-        sut.loadProducts()
-        sut.onLoad = {
-            availableProducts = $0
-            exp.fulfill()
-        }
-        // Timely coupled, needs to be stubbed after the call.
-        let result = ProductLoaderDelegate.ProductsResult.success(
-            [dummyProduct(identifier: "product 1", title: "title 1", priceValue: 12.00),
-             dummyProduct(identifier: "product 2", title: "title 2", priceValue: 13.00)])
-        productResultHandler.stubbedResult = result
-        
-        wait(for: [exp], timeout: 0.1)
-        XCTAssertEqual(productLoader.fetchProductsCallCount, 1)
-        XCTAssertEqual(availableProducts, expectedAvailableProducts)
+        expect(sut, toDeliver: { availableProducts in
+            XCTAssertEqual(productLoader.fetchProductsCallCount, 1)
+            XCTAssertEqual(availableProducts, expectedAvailableProducts)
+        }, when: {
+            productResultHandler.stubbedResult = .success(
+                [
+                    dummyProduct(identifier: "product 1", title: "title 1", priceValue: 12.00),
+                    dummyProduct(identifier: "product 2", title: "title 2", priceValue: 13.00)
+                ]
+            )
+        })
     }
     
     func test_loadProductsWithFailure_doesNotDeliverAvailableProducts() {
+        let (sut, productLoader, productResultHandler) = makeSUT()
+        
+        expect(sut, toDeliver: { availableProducts in
+            XCTAssertEqual(productLoader.fetchProductsCallCount, 1)
+            XCTAssertNil(availableProducts)
+        }, when: {
+            productResultHandler.stubbedResult = .failure(anyNSError())
+        }, expectationIsInverted: true)
+    }
+    
+    
+    // MARK: - Helpers
+    
+    private func makeSUT() -> (sut: PurchaseCoordinator, loader: ProductLoaderSpy, resultHandler: ProductResultHandlerStub) {
         let productLoader = ProductLoaderSpy()
         let transactionObserver = PaymentTransactionObserverStub()
         let productResultHandler = ProductResultHandlerStub()
@@ -57,8 +57,13 @@ class PurchaseCoordinatorTests: XCTestCase {
             productResultHandler: productResultHandler,
             transactionHandler: transactionHandler)
         
+        return (sut, productLoader, productResultHandler)
+    }
+    
+    private func expect(_ sut: PurchaseCoordinator, toDeliver assertions: ([AvailableProduct]?) -> Void, when action: () -> Void, expectationIsInverted: Bool = false) {
         let exp = expectation(description: "wait for load")
-        exp.isInverted = true
+        exp.isInverted = expectationIsInverted
+        
         var availableProducts: [AvailableProduct]?
         
         sut.loadProducts()
@@ -67,16 +72,11 @@ class PurchaseCoordinatorTests: XCTestCase {
             exp.fulfill()
         }
         // Timely coupled, needs to be stubbed after the call.
-        let result = ProductLoaderDelegate.ProductsResult.failure(anyNSError())
-        productResultHandler.stubbedResult = result
+        action()
         
         wait(for: [exp], timeout: 0.1)
-        XCTAssertEqual(productLoader.fetchProductsCallCount, 1)
-        XCTAssertNil(availableProducts)
+        assertions(availableProducts)
     }
-    
-    
-    // MARK: - Helpers
     
     private func dummyProduct(identifier: String, title: String, priceValue: NSDecimalNumber) -> DummySKProduct {
         DummySKProduct(identifier: identifier, title: title, priceValue: priceValue)
