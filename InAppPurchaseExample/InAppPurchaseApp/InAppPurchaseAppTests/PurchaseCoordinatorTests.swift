@@ -13,13 +13,13 @@ import XCTest
 class PurchaseCoordinatorTests: XCTestCase {
     
     func test_loadProductsWithSuccess_deliversAvailableProducts() {
-        let (sut, productLoader, productResultHandler) = makeSUT()
+        let (sut, productLoader, productResultHandler) = makeSUTWithLoader()
         let expectedAvailableProducts = [
             AvailableProduct(id: "product 1", title: "title 1", price: "12"),
             AvailableProduct(id: "product 2", title: "title 2", price: "13")
         ]
         
-        expect(sut, toDeliver: { availableProducts in
+        expect(sut, toDeliverAvailableProducts: { availableProducts in
             XCTAssertEqual(productLoader.fetchProductsCallCount, 1)
             XCTAssertEqual(availableProducts, expectedAvailableProducts)
         }, when: {
@@ -33,9 +33,9 @@ class PurchaseCoordinatorTests: XCTestCase {
     }
     
     func test_loadProductsWithFailure_doesNotDeliverAvailableProducts() {
-        let (sut, productLoader, productResultHandler) = makeSUT()
+        let (sut, productLoader, productResultHandler) = makeSUTWithLoader()
         
-        expect(sut, toDeliver: { availableProducts in
+        expect(sut, toDeliverAvailableProducts: { availableProducts in
             XCTAssertEqual(productLoader.fetchProductsCallCount, 1)
             XCTAssertNil(availableProducts)
         }, when: {
@@ -43,12 +43,39 @@ class PurchaseCoordinatorTests: XCTestCase {
         }, expectationIsInverted: true)
     }
     
+    // TODO: - Test array logic
     
     // MARK: - Helpers
     
-    private func makeSUT() -> (sut: PurchaseCoordinator, loader: ProductLoaderSpy, resultHandler: ProductResultHandlerStub) {
+    private func makeSUTWithLoader() -> (
+        sut: PurchaseCoordinator,
+        loader: ProductLoaderSpy,
+        resultHandler: ProductResultHandlerStub
+    ) {
+        let tuple = SUT()
+        
+        return (tuple.sut, tuple.loader, tuple.resultHandler)
+    }
+    
+    private func makeSUTWithObserver() -> (
+        sut: PurchaseCoordinator,
+        observer: PaymentTransactionObserverSpy,
+        transactionHandler: PaymentTransactionResultHandlerStub
+    ) {
+        let tuple = SUT()
+        
+        return (tuple.sut, tuple.observer, tuple.transactionHandler)
+    }
+    
+    private func SUT() -> (
+        sut: PurchaseCoordinator,
+        loader: ProductLoaderSpy,
+        resultHandler: ProductResultHandlerStub,
+        observer: PaymentTransactionObserverSpy,
+        transactionHandler: PaymentTransactionResultHandlerStub
+    ) {
         let productLoader = ProductLoaderSpy()
-        let transactionObserver = PaymentTransactionObserverStub()
+        let transactionObserver = PaymentTransactionObserverSpy()
         let productResultHandler = ProductResultHandlerStub()
         let transactionHandler = PaymentTransactionResultHandlerStub()
         let sut = PurchaseCoordinator(
@@ -57,10 +84,10 @@ class PurchaseCoordinatorTests: XCTestCase {
             productResultHandler: productResultHandler,
             transactionHandler: transactionHandler)
         
-        return (sut, productLoader, productResultHandler)
+        return (sut, productLoader, productResultHandler, transactionObserver, transactionHandler)
     }
     
-    private func expect(_ sut: PurchaseCoordinator, toDeliver assertions: ([AvailableProduct]?) -> Void, when action: () -> Void, expectationIsInverted: Bool = false) {
+    private func expect(_ sut: PurchaseCoordinator, toDeliverAvailableProducts assertions: ([AvailableProduct]?) -> Void, when action: () -> Void, expectationIsInverted: Bool = false) {
         let exp = expectation(description: "wait for load")
         exp.isInverted = expectationIsInverted
         
@@ -76,6 +103,24 @@ class PurchaseCoordinatorTests: XCTestCase {
         
         wait(for: [exp], timeout: 0.1)
         assertions(availableProducts)
+    }
+    
+    private func expect(_ sut: PurchaseCoordinator, toDeliverPurchasedProducts assertions: ([PurchasedProduct]?) -> Void, when action: () -> Void, expectationIsInverted: Bool = false) {
+        let exp = expectation(description: "wait for restore")
+        exp.isInverted = expectationIsInverted
+        
+        var purchasedProducts: [PurchasedProduct]?
+        
+        sut.restorePurchasedProducts()
+        sut.onRestore = {
+            purchasedProducts = $0
+            exp.fulfill()
+        }
+        // Timely coupled, needs to be stubbed after the call.
+        action()
+        
+        wait(for: [exp], timeout: 0.1)
+        assertions(purchasedProducts)
     }
     
     private func dummyProduct(identifier: String, title: String, priceValue: NSDecimalNumber) -> DummySKProduct {
@@ -128,35 +173,43 @@ class PurchaseCoordinatorTests: XCTestCase {
         var completion: ((ProductsResult) -> Void)?
         
         func didFetchProducts(with result: ProductsResult) {
-                completion?(result)
+            completion?(result)
         }
     }
     
-    private class PaymentTransactionObserverStub: PaymentTransactionObserving {
-        static var stubbedResult: PaymentTransactionObserverDelegate.TransactionResult = .success([])
+    private class PaymentTransactionObserverSpy: PaymentTransactionObserving {
+
+        enum Message {
+            case buy
+            case restore
+        }
         
         var delegate: PaymentTransactionObserverDelegate?
         
+        private(set) var calls: [Message] = []
+        
         func buy(_ product: SKProduct) {
-            complete()
+            calls.append(.buy)
         }
         
         func restore() {
-            complete()
-        }
-        
-        private func complete() {
-            DispatchQueue.global(qos: .background).async {
-                self.delegate?.didUpdateTransactions(with: PaymentTransactionObserverStub.stubbedResult)
-            }
+            calls.append(.restore)
         }
     }
     
     private class PaymentTransactionResultHandlerStub: PaymentTransactionResultHandling {
+        
+        var stubbedResult: TransactionResult? {
+            willSet {
+                if let result = newValue {
+                    completion?(result)
+                }
+            }
+        }
         var completion: ((TransactionResult) -> Void)?
         
         func didUpdateTransactions(with result: TransactionResult) {
-            
+            completion?(result)
         }
     }
 }
