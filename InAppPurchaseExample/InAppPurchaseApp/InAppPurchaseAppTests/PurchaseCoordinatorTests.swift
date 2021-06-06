@@ -46,6 +46,35 @@ class PurchaseCoordinatorTests: XCTestCase {
         XCTAssertEqual(availableProducts, expectedAvailableProducts)
     }
     
+    func test_loadProductsWithFailure_doesNotDeliverAvailableProducts() {
+        let productLoader = ProductLoaderSpy()
+        let transactionObserver = PaymentTransactionObserverStub()
+        let productResultHandler = ProductResultHandlerStub()
+        let transactionHandler = PaymentTransactionResultHandlerStub()
+        let sut = PurchaseCoordinator(
+            productLoader: productLoader,
+            transactionObserver: transactionObserver,
+            productResultHandler: productResultHandler,
+            transactionHandler: transactionHandler)
+        
+        let exp = expectation(description: "wait for load")
+        exp.isInverted = true
+        var availableProducts: [AvailableProduct]?
+        
+        sut.loadProducts()
+        sut.onLoad = {
+            availableProducts = $0
+            exp.fulfill()
+        }
+        // Timely coupled, needs to be stubbed after the call.
+        let result = ProductLoaderDelegate.ProductsResult.failure(anyNSError())
+        productResultHandler.stubbedResult = result
+        
+        wait(for: [exp], timeout: 0.1)
+        XCTAssertEqual(productLoader.fetchProductsCallCount, 1)
+        XCTAssertNil(availableProducts)
+    }
+    
     
     // MARK: - Helpers
     
