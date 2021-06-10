@@ -67,12 +67,29 @@ class PurchaseCoordinatorTests: XCTestCase {
         ]
         setup(sut, withAvailableProducts: [
             dummyProduct(identifier: "id 1", title: "title 1", priceValue: 12.00),
-            dummyProduct(identifier: "id 2", title: "title 2", priceValue: 13.00)
+            dummyProduct(identifier: "id 2", title: "title 2", priceValue: 13.00),
+            dummyProduct(identifier: "id 3", title: "title 3", priceValue: 15.00)
         ])
         
         expect(sut, toDeliverPurchasedProducts: { purchasedProducts in
             XCTAssertEqual(transactionObserver.calls, [.restore])
             assertEqualRegardlessOfOrder(purchasedProducts, expectedPurchasedProducts)
+        }, when: {
+            transactionHandler.stubbedResult = .success(
+                [
+                    .transaction(.restored, "id 1"),
+                    .transaction(.restored, "id 2")
+                ]
+            )
+        })
+    }
+    
+    func test_restoreWithSuccess_andNoAvailableProduct_deliversZeroPurchasedProducts() {
+        setup(sut, withAvailableProducts: [])
+        
+        expect(sut, toDeliverPurchasedProducts: { purchasedProducts in
+            XCTAssertEqual(transactionObserver.calls, [.restore])
+            XCTAssertEqual(purchasedProducts, [])
         }, when: {
             transactionHandler.stubbedResult = .success(
                 [
