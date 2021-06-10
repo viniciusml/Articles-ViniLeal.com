@@ -65,13 +65,10 @@ class PurchaseCoordinatorTests: XCTestCase {
             PurchasedProduct(id: "id 1", title: "title 1"),
             PurchasedProduct(id: "id 2", title: "title 2")
         ]
-        sut.loadProducts()
-        productResultHandler.stubbedResult = .success(
-            [
-                dummyProduct(identifier: "id 1", title: "title 1", priceValue: 12.00),
-                dummyProduct(identifier: "id 2", title: "title 2", priceValue: 13.00)
-            ]
-        )
+        setup(sut, withAvailableProducts: [
+            dummyProduct(identifier: "id 1", title: "title 1", priceValue: 12.00),
+            dummyProduct(identifier: "id 2", title: "title 2", priceValue: 13.00)
+        ])
         
         expect(sut, toDeliverPurchasedProducts: { purchasedProducts in
             XCTAssertEqual(transactionObserver.calls, [.restore])
@@ -89,6 +86,11 @@ class PurchaseCoordinatorTests: XCTestCase {
     // TODO: - Test array logic
     
     // MARK: - Helpers
+    
+    private func setup(_ sut: PurchaseCoordinator, withAvailableProducts availableProducts: [SKProduct]) {
+        sut.loadProducts()
+        productResultHandler.stubbedResult = .success(availableProducts)
+    }
     
     private func expect(_ sut: PurchaseCoordinator, toDeliverAvailableProducts assertions: ([AvailableProduct]?) -> Void, when action: () -> Void, expectationIsInverted: Bool = false) {
         let exp = expectation(description: "wait for load")
@@ -223,5 +225,12 @@ class PurchaseCoordinatorTests: XCTestCase {
         func didUpdateTransactions(with result: TransactionResult) {
             completion?(result)
         }
+    }
+}
+
+private extension PurchasedProduct {
+    
+    static func make(_ id: String) -> PurchasedProduct {
+        PurchasedProduct(id: id, title: "title \(id)")
     }
 }
