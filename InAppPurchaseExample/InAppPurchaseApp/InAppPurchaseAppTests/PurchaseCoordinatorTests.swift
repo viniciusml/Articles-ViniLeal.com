@@ -12,8 +12,27 @@ import XCTest
 
 class PurchaseCoordinatorTests: XCTestCase {
     
+    var sut: PurchaseCoordinator!
+    private var productLoader: ProductLoaderSpy!
+    private var productResultHandler: ProductResultHandlerStub!
+    private var transactionObserver: PaymentTransactionObserverSpy!
+    private var transactionHandler: PaymentTransactionResultHandlerStub!
+    
+    override func setUp() {
+        super.setUp()
+        
+        productLoader = ProductLoaderSpy()
+        transactionObserver = PaymentTransactionObserverSpy()
+        productResultHandler = ProductResultHandlerStub()
+        transactionHandler = PaymentTransactionResultHandlerStub()
+        sut = PurchaseCoordinator(
+            productLoader: productLoader,
+            transactionObserver: transactionObserver,
+            productResultHandler: productResultHandler,
+            transactionHandler: transactionHandler)
+    }
+    
     func test_loadProductsWithSuccess_deliversAvailableProducts() {
-        let (sut, productLoader, productResultHandler) = makeSUTWithLoader()
         let expectedAvailableProducts = [
             AvailableProduct(id: "product 1", title: "title 1", price: "12"),
             AvailableProduct(id: "product 2", title: "title 2", price: "13")
@@ -33,8 +52,6 @@ class PurchaseCoordinatorTests: XCTestCase {
     }
     
     func test_loadProductsWithFailure_doesNotDeliverAvailableProducts() {
-        let (sut, productLoader, productResultHandler) = makeSUTWithLoader()
-        
         expect(sut, toDeliverAvailableProducts: { availableProducts in
             XCTAssertEqual(productLoader.fetchProductsCallCount, 1)
             XCTAssertNil(availableProducts)
@@ -43,49 +60,35 @@ class PurchaseCoordinatorTests: XCTestCase {
         }, expectationIsInverted: true)
     }
     
+    func test_restoreWithSuccess_deliversPurchasedProducts() {
+        let expectedPurchasedProducts = [
+            PurchasedProduct(id: "id 1", title: "title 1"),
+            PurchasedProduct(id: "id 2", title: "title 2")
+        ]
+        sut.loadProducts()
+        productResultHandler.stubbedResult = .success(
+            [
+                dummyProduct(identifier: "id 1", title: "title 1", priceValue: 12.00),
+                dummyProduct(identifier: "id 2", title: "title 2", priceValue: 13.00)
+            ]
+        )
+        
+        expect(sut, toDeliverPurchasedProducts: { purchasedProducts in
+            XCTAssertEqual(transactionObserver.calls, [.restore])
+            assertEqualRegardlessOfOrder(purchasedProducts, expectedPurchasedProducts)
+        }, when: {
+            transactionHandler.stubbedResult = .success(
+                [
+                    .transaction(.restored, "id 1"),
+                    .transaction(.restored, "id 2")
+                ]
+            )
+        })
+    }
+    
     // TODO: - Test array logic
     
     // MARK: - Helpers
-    
-    private func makeSUTWithLoader() -> (
-        sut: PurchaseCoordinator,
-        loader: ProductLoaderSpy,
-        resultHandler: ProductResultHandlerStub
-    ) {
-        let tuple = SUT()
-        
-        return (tuple.sut, tuple.loader, tuple.resultHandler)
-    }
-    
-    private func makeSUTWithObserver() -> (
-        sut: PurchaseCoordinator,
-        observer: PaymentTransactionObserverSpy,
-        transactionHandler: PaymentTransactionResultHandlerStub
-    ) {
-        let tuple = SUT()
-        
-        return (tuple.sut, tuple.observer, tuple.transactionHandler)
-    }
-    
-    private func SUT() -> (
-        sut: PurchaseCoordinator,
-        loader: ProductLoaderSpy,
-        resultHandler: ProductResultHandlerStub,
-        observer: PaymentTransactionObserverSpy,
-        transactionHandler: PaymentTransactionResultHandlerStub
-    ) {
-        let productLoader = ProductLoaderSpy()
-        let transactionObserver = PaymentTransactionObserverSpy()
-        let productResultHandler = ProductResultHandlerStub()
-        let transactionHandler = PaymentTransactionResultHandlerStub()
-        let sut = PurchaseCoordinator(
-            productLoader: productLoader,
-            transactionObserver: transactionObserver,
-            productResultHandler: productResultHandler,
-            transactionHandler: transactionHandler)
-        
-        return (sut, productLoader, productResultHandler, transactionObserver, transactionHandler)
-    }
     
     private func expect(_ sut: PurchaseCoordinator, toDeliverAvailableProducts assertions: ([AvailableProduct]?) -> Void, when action: () -> Void, expectationIsInverted: Bool = false) {
         let exp = expectation(description: "wait for load")
@@ -121,6 +124,15 @@ class PurchaseCoordinatorTests: XCTestCase {
         
         wait(for: [exp], timeout: 0.1)
         assertions(purchasedProducts)
+    }
+    
+    private func assertEqualRegardlessOfOrder(_ array1: [PurchasedProduct]?, _ array2: [PurchasedProduct]?, file: StaticString = #filePath, line: UInt = #line) {
+        let failureMessage = "\(String(describing: array1)) not equal to \(String(describing: array2))"
+        guard let array1 = array1, let array2 = array2 else {
+            return XCTFail(failureMessage, file: file, line: line)
+        }
+        
+        XCTAssertTrue(Set(array1) == Set(array2), failureMessage, file: file, line: line)
     }
     
     private func dummyProduct(identifier: String, title: String, priceValue: NSDecimalNumber) -> DummySKProduct {
