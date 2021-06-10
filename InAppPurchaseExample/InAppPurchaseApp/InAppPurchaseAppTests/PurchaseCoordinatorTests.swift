@@ -83,6 +83,20 @@ class PurchaseCoordinatorTests: XCTestCase {
         })
     }
     
+    func test_restoreWithFailure_doesNotDeliverPurchasedProducts() {
+        setup(sut, withAvailableProducts: [
+            dummyProduct(identifier: "id 1", title: "title 1", priceValue: 12.00),
+            dummyProduct(identifier: "id 2", title: "title 2", priceValue: 13.00)
+        ])
+        
+        expect(sut, toDeliverPurchasedProducts: { purchasedProducts in
+            XCTAssertEqual(transactionObserver.calls, [.restore])
+            XCTAssertNil(purchasedProducts)
+        }, when: {
+            transactionHandler.stubbedResult = .failure(anyNSError())
+        }, expectationIsInverted: true)
+    }
+    
     // TODO: - Test array logic
     
     // MARK: - Helpers
