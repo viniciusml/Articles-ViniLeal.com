@@ -114,8 +114,6 @@ class PurchaseCoordinatorTests: XCTestCase {
         }, expectationIsInverted: true)
     }
     
-    // TODO: - Test array logic
-    
     // MARK: - Helpers
     
     private func setup(_ sut: PurchaseCoordinator, withAvailableProducts availableProducts: [SKProduct]) {

@@ -46,27 +46,17 @@ class PurchaseCoordinator {
     func restorePurchasedProducts() {
         transactionObserver.restore()
         transactionHandler.completion = { [weak self] result in
-            guard let self = self else { return }
+            guard let self = self,
+                  let transactions = try? result.get() else { return }
             
-            if let transactions = try? result.get() {
-                
-                let restoredTransactions = transactions.map { $0.identifier }
-                let availableProducts = self.availableProducts.map { $0.id }
-                
-                let restoredTransactionsSet = Set(restoredTransactions)
-                let availableProductsSet = Set(availableProducts)
-                
-                let intersectionsIds = Array(restoredTransactionsSet.intersection(availableProductsSet))
-
-                var restoredProducts = [PurchasedProduct]()
-                
-                intersectionsIds.forEach { id in
-                    if let product = self.availableProducts.filter({ $0.id == id }).first {
-                        restoredProducts.append(PurchasedProduct(id: product.id, title: product.title))
-                    }
+            var restoredProducts = [PurchasedProduct]()
+            
+            transactions.forEach { transaction in
+                if let product = self.availableProducts.filter({ $0.id == transaction.identifier }).first {
+                    restoredProducts.append(PurchasedProduct(id: product.id, title: product.title))
                 }
-                self.onRestore?(restoredProducts)
             }
+            self.onRestore?(restoredProducts)
         }
     }
 }
