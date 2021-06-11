@@ -35,11 +35,12 @@ class PurchaseCoordinator {
     func loadProducts() {
         productLoader.fetchProducts()
         productResultHandler.completion = { [weak self] result in
-            if let products = try? result.get() {
-                let availableProducts = products.map { AvailableProduct(id: $0.productIdentifier, title: $0.localizedTitle, price: $0.price.stringValue) }
-                self?.availableProducts = availableProducts
-                self?.onLoad?(availableProducts)
-            }
+            guard let self = self,
+                  let products = try? result.get() else { return }
+            
+            let availableProducts = products.map(AvailableProduct.init)
+            self.availableProducts = availableProducts
+            self.onLoad?(availableProducts)
         }
     }
     
@@ -49,14 +50,38 @@ class PurchaseCoordinator {
             guard let self = self,
                   let transactions = try? result.get() else { return }
             
-            var restoredProducts = [PurchasedProduct]()
-            
-            transactions.forEach { transaction in
-                if let product = self.availableProducts.filter({ $0.id == transaction.identifier }).first {
-                    restoredProducts.append(PurchasedProduct(id: product.id, title: product.title))
+            let restoredProducts = transactions.reduce(([PurchasedProduct]())) { accumulator, value in
+                var accumulatorCopy = accumulator
+                if let product = self.availableProducts.firstMatching(value.identifier) {
+                    accumulatorCopy.append(PurchasedProduct(product))
                 }
+                return accumulatorCopy
             }
+            
             self.onRestore?(restoredProducts)
         }
+    }
+}
+
+private extension AvailableProduct {
+    
+    init(_ product: SKProduct) {
+        self.init(id: product.productIdentifier,
+                  title: product.localizedTitle,
+                  price: product.price.stringValue)
+    }
+}
+
+private extension Array where Element == AvailableProduct {
+    
+    func firstMatching(_ id: String) -> Element? {
+        first(where: { $0.id == id })
+    }
+}
+
+private extension PurchasedProduct {
+    
+    init(_ product: AvailableProduct) {
+        self.init(id: product.id, title: product.title)
     }
 }
