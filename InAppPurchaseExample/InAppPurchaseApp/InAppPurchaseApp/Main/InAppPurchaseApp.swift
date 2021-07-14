@@ -11,31 +11,23 @@ import SwiftUI
 @main
 struct InAppPurchaseApp: App {
     
-    let productLoader = ProductLoader(request: ProductRequestFactory.make(with: IDLoader.ids))
-    let productResultHandler = MainQueueDecorator(ProductResultHandler())
-    let observer = PurchaseObserver()
+    let productCoordinator = PurchaseCoordinator(
+        productLoader: ProductLoader(request: ProductRequestFactory.make(with: IDLoader.ids)),
+        transactionObserver: PaymentTransactionObserver(),
+        productResultHandler: MainQueueDecorator(ProductResultHandler()),
+        transactionHandler: MainQueueDecorator(PaymentTransactionHandler())
+    )
     
-    init() {
-        productLoader.delegate = productResultHandler
-    }
+    let observer = PurchaseObserver()
     
     var body: some Scene {
         WindowGroup {
             Color.green
                 .ignoresSafeArea(.all)
-                .overlay(ContentView(observer: observer, actionContainer: ActionContainer(onRestoreTap: {}, onBuyTap: {})))
-                .onAppear(perform: loadProducts)
-        }
-    }
-    
-    private func loadProducts() {
-        productLoader.fetchProducts()
-        productResultHandler.completion = { result in
-            if let products = try? result.get() {
-                observer.setViewModel(
-                    ViewModel(products: products.map { Product(id: $0.productIdentifier, title: $0.localizedTitle, price: $0.price.stringValue) })
-                )
-            }
+                .overlay(ContentView(observer: observer,
+                                     actionContainer: ActionContainer(onRestoreTap: productCoordinator.restorePurchasedProducts,
+                                                                      onBuyTap: { _ in }))) // String -> SKProduct
+                .onAppear(perform: productCoordinator.loadProducts)
         }
     }
 }

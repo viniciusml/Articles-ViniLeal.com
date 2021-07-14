@@ -61,6 +61,11 @@ class PurchaseCoordinator {
             self.onRestore?(restoredProducts)
         }
     }
+    
+    func purchase() {
+        
+//        transactionObserver.buy(<#T##product: SKProduct##SKProduct#>)
+    }
 }
 
 private extension AvailableProduct {

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ActionContainer {
     let onRestoreTap: () -> Void
-    let onBuyTap: () -> Void
+    let onBuyTap: (String) -> Void
 }
 
 struct ContentView: View {
@@ -27,7 +27,7 @@ struct ContentView_Previews: PreviewProvider {
             .ignoresSafeArea(.all)
             .overlay(ContentView(
                         observer: PurchaseObserver(
-                            viewModel: ViewModel(products: [])),
-                        actionContainer: ActionContainer(onRestoreTap: {}, onBuyTap: {})))
+                            viewModel: ViewModel(availableProducts: [], purchasedProducts: [])),
+                        actionContainer: ActionContainer(onRestoreTap: {}, onBuyTap: { _ in })))
     }
 }

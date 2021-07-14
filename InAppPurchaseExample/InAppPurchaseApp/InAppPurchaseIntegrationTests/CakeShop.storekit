@@ -7,11 +7,11 @@
       "localizations" : [
         {
           "description" : "",
-          "displayName" : "",
+          "displayName" : "Carrot Cake",
           "locale" : "en_US"
         }
       ],
-      "productID" : "com.inAppPurchase.carrot.cake",
+      "productID" : "com.inAppPurchaseExample.carrotCake",
       "referenceName" : "Carrot Cake",
       "type" : "NonConsumable"
     },
@@ -26,7 +26,7 @@
           "locale" : "en_US"
         }
       ],
-      "productID" : "com.inAppPurchase.chocolate.cake",
+      "productID" : "com.inAppPurchaseExample.chocolateCake",
       "referenceName" : "Chocolate Cake",
       "type" : "NonConsumable"
     },
@@ -41,7 +41,7 @@
           "locale" : "en_US"
         }
       ],
-      "productID" : "com.inAppPurchase.salted.caramel.cake",
+      "productID" : "com.inAppPurchaseExample.saltedCaramelCake",
       "referenceName" : "Salted Caramel Cake",
       "type" : "Consumable"
     },
@@ -56,7 +56,7 @@
           "locale" : "en_US"
         }
       ],
-      "productID" : "com.inAppPurchase.red.velvet.cake",
+      "productID" : "com.inAppPurchaseExample.redVelvetCake",
       "referenceName" : "Red Velvet Cake",
       "type" : "Consumable"
     }

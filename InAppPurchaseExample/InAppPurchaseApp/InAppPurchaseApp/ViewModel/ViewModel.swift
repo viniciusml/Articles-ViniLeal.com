@@ -6,16 +6,19 @@
 //
 
 import Foundation
-import InAppPurchase
 
 class PurchaseObserver: ObservableObject {
     private(set) var viewModel: ViewModel
     
-    var products: [Product] {
-        viewModel.products
+    var availableProducts: [AvailableProduct] {
+        viewModel.availableProducts
     }
     
-    init(viewModel: ViewModel = ViewModel(products: [])) {
+    var purchasedProducts: [PurchasedProduct] {
+        viewModel.purchasedProducts
+    }
+    
+    init(viewModel: ViewModel = .empty) {
         self.viewModel = viewModel
     }
     
@@ -27,9 +30,17 @@ class PurchaseObserver: ObservableObject {
 }
 
 struct ViewModel {
-    private(set) var products: [Product]
+    private(set) var availableProducts: [AvailableProduct]
+    private(set) var purchasedProducts: [PurchasedProduct]
     
-    init(products: [Product]) {
-        self.products = products
+    init(availableProducts: [AvailableProduct], purchasedProducts: [PurchasedProduct]) {
+        self.availableProducts = availableProducts
+        self.purchasedProducts = purchasedProducts
+    }
+}
+
+private extension ViewModel {
+    static var empty: ViewModel {
+        ViewModel(availableProducts: [], purchasedProducts: [])
     }
 }
